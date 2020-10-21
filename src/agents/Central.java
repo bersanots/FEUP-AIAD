@@ -1,6 +1,8 @@
 import jade.core.Agent;
 
-public class HelloWorldAgent extends Agent {
+public class Central extends Agent {
+
+	public Central() {}
 
 	public void setup() {
 		System.out.println("Hello world!");
