@@ -1,3 +1,15 @@
+### jade ###
+APDescription.txt
+MTPs-Main-Container.txt
+
+### vscode ###
+.vscode
+*.code-workspace
+
+### IntelliJ ###
+.idea
+*.iml
+
 ### Eclipse ###
 .metadata
 bin/
@@ -10,6 +22,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.classpath
+.project
 
 # External tool builders
 .externalToolBuilders/
