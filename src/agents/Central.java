@@ -12,6 +12,7 @@ public class Central extends Agent {
 	public Central() {}
 
 	public void setup() {
+		System.out.println("A new CENTRALI was created!");
 		//add behaviours
 	}
 

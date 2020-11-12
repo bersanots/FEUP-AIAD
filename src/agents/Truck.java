@@ -9,23 +9,23 @@ import jade.core.Agent;
 public class Truck extends Agent {
 
 	private List<Compartment> compartments;
-	public Truck(String type) {
+	public Truck(String type, int total_capacity) {
 		
 		compartments = new ArrayList<>();
 		switch (type) {
 		
 		
 		case "Recycling":
-			compartments.add(new Compartment(TRASH_TYPE.BLUE, 100));
-			compartments.add(new Compartment(TRASH_TYPE.YELLOW, 100));
-			compartments.add(new Compartment(TRASH_TYPE.GREEN, 100));
+			compartments.add(new Compartment(TRASH_TYPE.BLUE, total_capacity/3));
+			compartments.add(new Compartment(TRASH_TYPE.YELLOW, total_capacity/3));
+			compartments.add(new Compartment(TRASH_TYPE.GREEN, total_capacity/3));
 			break;
 		case "Urgent":
-			compartments.add(new Compartment(TRASH_TYPE.REGULAR, 100));
-			compartments.add(new Compartment(TRASH_TYPE.ORGANIC, 100));
+			compartments.add(new Compartment(TRASH_TYPE.REGULAR, total_capacity/2));
+			compartments.add(new Compartment(TRASH_TYPE.ORGANIC, total_capacity/2));
 			break;
 		case "Simple"://simple (1 compartment)
-			compartments.add(new Compartment(TRASH_TYPE.ELETRONIC, 100));
+			compartments.add(new Compartment(TRASH_TYPE.REGULAR, total_capacity));
 			break;
 		}
 	}
