@@ -1,5 +1,7 @@
 package agents;
 
+import java.io.IOException;
+
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -11,23 +13,26 @@ import jade.proto.AchieveREResponder;
 
 class GiveTrashBehaviour extends AchieveREResponder {
 
-	public GiveTrashBehaviour(Agent a, MessageTemplate mt) {
-		super(a, mt);
+	private Compartment compartment;
+	
+	public GiveTrashBehaviour(Container container, MessageTemplate mt) {
+		super(container, mt);
 		// TODO Auto-generated constructor stub
+		this.compartment = container.getCompartment();
 	}
 
 	protected boolean checkAction() {
-		return true;
+		return !this.compartment.isEmpty();
 	}
 
-	protected boolean performAction() {
-		return true;
+	protected int performAction() {
+		return this.compartment.emptyCompartment();
 	}
 
 	@Override
 	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
 		System.out.println("Agent " + this.getAgent().getLocalName() + ": REQUEST received from "
-				+ request.getSender().getName() + ". Action is " + request.getContent());
+				+ request.getSender().getName() ); //+ ". Action is " + request.getContent());
 		if (checkAction()) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
@@ -45,10 +50,23 @@ class GiveTrashBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-		if (performAction()) {
+		
+		int trashTaken = performAction();
+		if ( trashTaken >= 0) {
 			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
 			ACLMessage inform = request.createReply();
-			inform.setContent("BROU");
+			
+			Object[] oMsg=new Object[3];
+	         oMsg[0] = "REQ";
+	         oMsg[1] = compartment.getType();
+	         oMsg[2] = trashTaken;
+			try {
+				inform.setContentObject(oMsg);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//inform.setContent(compartment.getType().name() + " " + trashTaken);
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {

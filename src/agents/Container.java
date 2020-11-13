@@ -12,7 +12,7 @@ public class Container extends Agent {
 
 	private Compartment compartment;
 
-	private final int rate = 3000;
+	private final int rate = 500;
 	
 	
 	
@@ -46,4 +46,7 @@ public class Container extends Agent {
 		}
 	}
 
+	public Compartment getCompartment() {
+		return this.compartment;
+	}
 }

@@ -1,6 +1,7 @@
 package agents;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,16 +34,33 @@ public class Truck extends Agent {
 			break;
 		}
 	}
+	
+	private ACLMessage buildPickupGarbageMsg(int amount) {
+		ACLMessage msg= new ACLMessage(ACLMessage.REQUEST);
+			msg.addReceiver(new AID("container", AID.ISLOCALNAME));
+		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+		//msg.setContent("dummy-action");
+		Object[] oMsg=new Object[3];
+        oMsg[0] = "REQ";
+        oMsg[1] = amount;
+		try {
+			msg.setContentObject(oMsg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return msg;
+	}
 
 	public void setup() {
 		System.out.println("A new Truck was created!");
 		//add behaviours
-		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-  			msg.addReceiver(new AID("container", AID.ISLOCALNAME));
-			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-			// We want to receive a reply in 10 secs
-			msg.setContent("dummy-action");
+		ACLMessage msg = this.buildPickupGarbageMsg(10);
+			
+		ACLMessage msg2 = this.buildPickupGarbageMsg(15);
+			
 		addBehaviour(new PickupTrashBehaviour(this, msg));
+		addBehaviour(new PickupTrashBehaviour(this, msg2));
 	}
 
 	public void takeDown() {
@@ -80,5 +98,17 @@ public class Truck extends Agent {
 		for (Compartment compartment: compartments) {			
 			compartment.emptyCompartment();
 		}
+	}
+	
+	public List<Compartment> getCompartments(){
+		return this.compartments;
+	}
+	
+	public String showContents() {
+		String oi = "";
+		for (Compartment compartment: compartments) {			
+			oi = oi + "Type: " + compartment.getType() + " | Amount: " + compartment.getCurrentAmount() + "\n";
+		}
+		return oi;
 	}
 }

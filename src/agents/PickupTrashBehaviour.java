@@ -1,16 +1,24 @@
 package agents;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Vector;
 
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
 
 class PickupTrashBehaviour extends AchieveREInitiator {
-
-	public PickupTrashBehaviour(Agent a, ACLMessage msg) {
-		super(a, msg);
-		// TODO Auto-generated constructor stub
+	
+	
+	private Truck truck;
+	
+	public PickupTrashBehaviour(Truck truckAgent, ACLMessage msg) {
+		super(truckAgent, msg);
+		
+		this.truck = truckAgent;
+		
 	}
 	
 	
@@ -38,6 +46,19 @@ class PickupTrashBehaviour extends AchieveREInitiator {
 	@Override
 	protected void handleInform(ACLMessage inform) {
 		System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
-		System.out.println("REPLY CONTENT: " + inform.getContent());
+		
+		try {
+			Object[] oMsg= (Object[]) inform.getContentObject();
+			String req = (String) oMsg[0];
+			TRASH_TYPE trashType = (TRASH_TYPE) oMsg[1];
+			int amount = (Integer) oMsg[2];
+			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
+			this.truck.pickupGarbage(trashType, amount);
+			System.out.println(this.truck.showContents());
+		} catch (UnreadableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

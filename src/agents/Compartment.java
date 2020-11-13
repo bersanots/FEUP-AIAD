@@ -19,6 +19,10 @@ public class Compartment {
 		this.capacity = capacity;
 		this.type = type;
 	}
+	
+	public boolean isEmpty() {
+		return this.capacity == 0;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -34,6 +38,10 @@ public class Compartment {
 
 	public TRASH_TYPE getType() {
 		return type;
+	}
+	
+	public int getCurrentAmount() {
+		return this.current_amount;
 	}
 
 	public int getCapacity() {
@@ -52,7 +60,7 @@ public class Compartment {
 
 		int removedAmount;
 		if (amount <= this.current_amount)
-			removedAmount = this.current_amount - amount;
+			removedAmount = amount;
 		else
 			removedAmount = this.current_amount;
 
