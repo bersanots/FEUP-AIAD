@@ -2,7 +2,11 @@ package agents;
 
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 public class Container extends Agent {
 
@@ -17,9 +21,13 @@ public class Container extends Agent {
 	}
 
 	public void setup() {
-		addBehaviour(new TrashGenerationBehaviour(this, rate));	
+		//addBehaviour(new TrashGenerationBehaviour(this, rate));	
 		System.out.println("A new Container was created!");
 		//add behaviours
+		MessageTemplate template = MessageTemplate.and(
+		  		MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+		  		MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+		addBehaviour(new GiveTrashBehaviour(this, template));
 	}
 
 	public void takeDown() {

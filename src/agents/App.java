@@ -26,9 +26,9 @@ public class App{
 			ac1 = container.acceptNewAgent("central", central);
 			ac2 = container.acceptNewAgent("truck", truck);
 			ac3 = container.acceptNewAgent("container", c);
-			ac1.start();			
-			ac2.start();
+			ac1.start();
 			ac3.start();
+			ac2.start();
 		} catch (StaleProxyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

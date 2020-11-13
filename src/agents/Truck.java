@@ -4,7 +4,11 @@ package agents;
 import java.util.ArrayList;
 import java.util.List;
 
+import jade.core.AID;
 import jade.core.Agent;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
+import jade.proto.AchieveREInitiator;
 
 public class Truck extends Agent {
 
@@ -33,6 +37,12 @@ public class Truck extends Agent {
 	public void setup() {
 		System.out.println("A new Truck was created!");
 		//add behaviours
+		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+  			msg.addReceiver(new AID("container", AID.ISLOCALNAME));
+			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+			// We want to receive a reply in 10 secs
+			msg.setContent("dummy-action");
+		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 
 	public void takeDown() {
