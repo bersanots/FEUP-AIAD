@@ -1,7 +1,9 @@
 package agents;
 
 import java.io.IOException;
+import java.util.List;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
@@ -54,7 +56,14 @@ class OrderPickupBehaviour extends AchieveREResponder {
 		return ret;
 	}
 
-	protected boolean performAction() {
+	protected boolean performAction(TRASH_TYPE t_type) {
+		
+		
+		List<AID> truckIds = DFUtils.getService(central, "truck" + t_type.name());
+		System.out.println("ACTIONI");
+		for (AID truckId : truckIds) {
+			System.out.println("OI" + truckId.getName());
+		}
 		return true;
 	}
 
@@ -85,7 +94,7 @@ class OrderPickupBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-		if (performAction()) {
+		if (performAction(this.trashType)) {
 			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
 			ACLMessage inform = request.createReply();
 
