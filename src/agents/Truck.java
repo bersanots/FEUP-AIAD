@@ -51,16 +51,19 @@ public class Truck extends Agent {
 		}
 		return msg;
 	}
+	
+	private void requestTrashPickup(int amount) {
+		
+		ACLMessage msg = this.buildPickupGarbageMsg(amount);
+		addBehaviour(new PickupTrashBehaviour(this, msg));
+	}
 
 	public void setup() {
 		System.out.println("A new Truck was created!");
 		//add behaviours
-		ACLMessage msg = this.buildPickupGarbageMsg(10);
 			
-		ACLMessage msg2 = this.buildPickupGarbageMsg(15);
-			
-		addBehaviour(new PickupTrashBehaviour(this, msg));
-		addBehaviour(new PickupTrashBehaviour(this, msg2));
+		requestTrashPickup(10);
+		requestTrashPickup(15);
 	}
 
 	public void takeDown() {
