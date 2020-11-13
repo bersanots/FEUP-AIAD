@@ -52,9 +52,9 @@ public class Truck extends Agent {
 		return msg;
 	}
 	
-	private int requestTrashPickup(int amount) {
+	private void requestTrashPickup(int amount) {
 		
-		ACLMessage msg = this.buildPickupGarbageMsg(10);
+		ACLMessage msg = this.buildPickupGarbageMsg(amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 
