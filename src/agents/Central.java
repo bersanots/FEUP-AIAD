@@ -14,6 +14,7 @@ public class Central extends Agent {
 	public void setup() {
 		System.out.println("A new CENTRALI was created!");
 		//add behaviours
+		addBehaviour(new OrderPickupBehaviour(this));
 	}
 
 	public void addTruck(Truck t) {

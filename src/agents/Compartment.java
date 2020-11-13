@@ -23,6 +23,10 @@ public class Compartment {
 	public boolean isEmpty() {
 		return this.capacity == 0;
 	}
+	
+	public boolean isFull() {
+		return this.current_amount == this.capacity;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -123,13 +127,13 @@ public class Compartment {
 
 	public void generateTrash() {
 		
-		int max, min;
+		int max = 10, min = 1;
 		int probability = getTypeProbability();
 		Random random = new Random();
 		
 		if (isTrashGenerated(probability))
 		{
-			int randomTrashAmount = getRandomTrashAmount(1,10);
+			int randomTrashAmount = getRandomTrashAmount(min,max);
 			System.out.println("ADDED THIS AMOUNTI: " + randomTrashAmount);
 			this.addContents(randomTrashAmount);
 		}
