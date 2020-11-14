@@ -15,17 +15,19 @@ import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
 
 public class RequestPickupBehaviour extends AchieveREInitiator {
-	
+
 	private Container container;
 	private Compartment compartment;
-	
+
 	public RequestPickupBehaviour(Container container) {
 		super(container, createMsg(container));
+		container.waitForTruck();
 		this.container = container;
 		this.compartment = container.getCompartment();
 		
+
 	}
-	
+
 	protected static ACLMessage createMsg(Container container) {
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 		msg.addReceiver(new AID("central", AID.ISLOCALNAME));
@@ -44,45 +46,60 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 		}
 		return msg;
 	}
-	
-	
-		@Override
+
+	@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
+		System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+		this.container.stopAwaitingTruck();
 	}
-	
+
 	protected void handleFailure(ACLMessage failure) {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
 			// does not exist
 			System.out.println("Responder does not exist");
+		} else {
+			System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
 		}
-		else {
-			System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
-		}
+		this.container.stopAwaitingTruck();
 	}
-	
+
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		System.out.println("Agent "+agree.getSender().getName()+"agreed to perform the requested action");
+		System.out.println("Agent " + agree.getSender().getName() + "agreed to perform the requested action");
 	}
-	
+
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
-		
-		//try {
-			//Object[] oMsg= (Object[]) inform.getContentObject();
-			//String req = (String) oMsg[0];
-			//TRASH_TYPE trashType = (TRASH_TYPE) oMsg[1];
-			//int amount = (Integer) oMsg[2];
-			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
-			this.container.waitForTruck();
-			System.out.println("PICKUP ORDERED YAY");
-			/*} catch (UnreadableException e) {
+		System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
+
+		// try {
+		Object[] oMsg;
+		try {
+			oMsg = (Object[]) inform.getContentObject();
+			String req = (String) oMsg[0];
+			String status = (String) oMsg[1];
+			if (status.equals("OK")) {
+				System.out.println("PICKUP ORDERED YAY");
+			}
+			else {
+				System.out.println("NO TRUCK COMING :'(");
+				this.container.stopAwaitingTruck();
+				}
+		} catch (UnreadableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		
+			this.container.stopAwaitingTruck();
+		}
+
+		// int amount = (Integer) oMsg[2];
+		// System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " +
+		// amount);
+
+		/*
+		 * } catch (UnreadableException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
+
 	}
 }

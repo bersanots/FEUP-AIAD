@@ -1,6 +1,8 @@
 package behaviours;
 
 import general.DFUtils;
+import general.PickupRequest;
+import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
 
@@ -65,12 +67,9 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 
 	protected boolean performAction(TrashType t_type, int amount, AID containerAID) {
 		
-		List<AID> truckIds = DFUtils.getService(central, "truck" + t_type.name());
-		System.out.println("ACTIONI");
-		for (AID truckId : truckIds) {
-			System.out.println("OI " + truckId.getName());
-		}
-		this.central.addBehaviour(new SetPickupContractBehaviour(this.central, amount, t_type, this.pos,truckIds, containerAID));
+		PickupRequest req = new PickupRequest(this.pos, containerAID);
+		PickupRequestInfo reqInfo = new PickupRequestInfo(req, amount, t_type);		
+		this.central.requestPickup(reqInfo);
 		return true;
 	}
 
@@ -105,10 +104,9 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
 			ACLMessage inform = request.createReply();
 
-			Object[] oMsg = new Object[3];
+			Object[] oMsg = new Object[2];
 			oMsg[0] = "REQ";
-			oMsg[1] = this.trashType;
-			oMsg[2] = this.amount;
+			oMsg[1] = "OK";
 			try {
 				inform.setContentObject(oMsg);
 			} catch (IOException e) {

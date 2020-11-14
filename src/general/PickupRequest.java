@@ -1,8 +1,9 @@
 package general;
 
 import jade.core.AID;
+import jade.util.leap.Serializable;
 
-public class PickupRequest {
+public class PickupRequest implements Serializable{
 	
 	private Position pos;
 	private AID containerAID;
@@ -27,5 +28,11 @@ public class PickupRequest {
 	public void setContainerAID(AID containerAID) {
 		this.containerAID = containerAID;
 	}
+	
+	@Override
+    public String toString() {
+        return "Position [pos=" + pos.toString() + ", containerAID=" + containerAID.toString()
+                + "]";
+    }
 	
 }

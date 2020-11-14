@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import agents.Central;
+import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
 import jade.core.AID;
@@ -15,18 +16,16 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
 
-class SetPickupContractBehaviour extends ContractNetInitiator {
+public class SetPickupContractBehaviour extends ContractNetInitiator {
 	
 	private Central central;
-	private int amount = 0;
-	private TrashType trashType = TrashType.REGULAR;
+	private PickupRequestInfo reqInfo;
 
-	public SetPickupContractBehaviour(Central central, int amount, TrashType trashType, Position pos, List<AID> truckAIDs, AID containerAID) {
-		super(central, buildMsg(amount, trashType, pos, truckAIDs, containerAID));
+	public SetPickupContractBehaviour(Central central, PickupRequestInfo reqInfo, List<AID> truckAIDs) {
+		super(central, buildMsg(reqInfo, truckAIDs));
 		// TODO Auto-generated constructor stub
 		this.central = central;
-		this.amount = amount;
-		this.trashType = trashType;
+		this.reqInfo = reqInfo;
 	}
 	
 	private boolean evaluateProposal(Object o) {
@@ -38,12 +37,12 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 		if (!msgProt.equals("TPROP"))
 			return false;
 		
-		return (t_type== this.trashType && this.amount <= capacity);
+		return (t_type== reqInfo.getTrashType() && reqInfo.getAmount() <= capacity);
 		
 	}
 
-	protected static ACLMessage buildMsg(int amount, TrashType trashType, Position pos,
-			List<AID> truckAIDs, AID containerAID) {
+	protected static ACLMessage buildMsg(PickupRequestInfo reqInfo,
+			List<AID> truckAIDs) {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
   		for (AID truckAID : truckAIDs) {
   			msg.addReceiver(truckAID);
@@ -51,12 +50,9 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 			// We want to receive a reply in 10 secs
 			//msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-			Object[] oMsg = new Object[5];
+			Object[] oMsg = new Object[2];
 			oMsg[0] = "CPROP";
-			oMsg[1] = trashType;
-			oMsg[2] = amount;
-			oMsg[3] = pos;
-			oMsg[4] = containerAID;
+			oMsg[1] = reqInfo;
 			
 			try {
 				msg.setContentObject(oMsg);
@@ -117,7 +113,9 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 		if (accept != null) {
 			System.out.println("Accepting proposal "+bestProposal+" from responder "+bestProposer.getName());
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-		}						
+		}
+		else 
+			central.insertRequest(reqInfo);
 	}
 	
 	protected void handleInform(ACLMessage inform) {

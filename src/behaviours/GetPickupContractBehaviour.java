@@ -3,6 +3,7 @@ package behaviours;
 import java.io.IOException;
 
 import agents.Truck;
+import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
 import jade.core.AID;
@@ -42,10 +43,12 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 			oMsg = (Object[]) cfp.getContentObject();
 			
 			String msgProt = (String) oMsg[0];
-			this.t_type = (TrashType)oMsg[1];
-			int amount = (int)oMsg[2];
-			this.containerPos = (Position) oMsg[3];
-			this.containerAID = (AID) oMsg[4];
+			PickupRequestInfo reqInfo = (PickupRequestInfo) oMsg[1];
+			
+			this.containerAID = reqInfo.getPickupRequest().getContainerAID();
+			this.containerPos = reqInfo.getPickupRequest().getPos();
+			this.t_type = reqInfo.getTrashType();
+			int amount = reqInfo.getAmount();
 			
 			if (!msgProt.equals("CPROP"))
 				return false;
