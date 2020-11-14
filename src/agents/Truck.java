@@ -71,6 +71,10 @@ public class Truck extends Agent {
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 	
+	public void requestTrashFullPickup(AID containerAID) {
+		requestTrashPickup(containerAID, -1);
+	}
+	
 	
 
 	public void setup() {

@@ -11,6 +11,7 @@ import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
@@ -18,6 +19,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 
 	private Container container;
 	private Compartment compartment;
+	private int amount = -1;
 	
 	public GiveTrashBehaviour(Container container, MessageTemplate mt) {
 		super(container, mt);
@@ -26,20 +28,38 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 		this.compartment = container.getCompartment();
 	}
 
-	protected boolean checkAction() {
-		return !this.compartment.isEmpty();
+	protected boolean checkAction(ACLMessage msg) {
+		
+		try {
+			Object[] o = (Object[]) msg.getContentObject();
+			String req = (String) o[0];
+			this.amount = (int) o[1];
+			return req.equals("REQ") && !this.compartment.isEmpty();
+		} catch (UnreadableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		
+		
 	}
 
 	protected int giveTrashToTruck() {
 		this.container.stopAwaitingTruck();
-		return this.compartment.emptyCompartment();		
+		int takenTrash;
+		if (amount > 0)
+			takenTrash = this.compartment.removeContents(amount);
+		else 
+			takenTrash = this.compartment.emptyCompartment();		
+		return takenTrash;
 	}
 
 	@Override
 	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
 		System.out.println("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from "
 				+ request.getSender().getLocalName() );
-		if (checkAction()) {
+		if (checkAction(request)) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
 			// don't want to send it.

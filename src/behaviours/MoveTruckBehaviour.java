@@ -34,7 +34,7 @@ public class MoveTruckBehaviour extends TickerBehaviour {
 		}
 		else {
 			if(truck.reachedContainer()) {
-				truck.requestTrashPickup(containerAID, amount);
+				truck.requestTrashFullPickup(containerAID);
 				truck.returnToCentral();
 			}
 			else truck.moveTowardsPickup();

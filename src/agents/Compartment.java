@@ -135,7 +135,7 @@ public class Compartment {
 			//System.out.println("ADDED THIS AMOUNTI: " + randomTrashAmount);
 			this.addContents(randomTrashAmount);
 		}
-		//System.out.println("Current amount: " + this.current_amount);
+		//System.out.println(this.getType() + ": Current amount: " + this.current_amount);
 	} 
 
 }
