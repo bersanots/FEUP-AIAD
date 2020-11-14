@@ -30,6 +30,25 @@ public final class DFUtils {
         }
 	}
     
+    public static void registerMultipleServices(Agent a, List<ServiceDescription> sd)
+	{
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(a.getAID());
+
+        try {
+        	DFAgentDescription previous_entries[] = DFService.search(a, dfd);
+			if ( previous_entries.length > 0 ) 
+            	DFService.deregister(a);
+            
+			for (ServiceDescription service : sd)
+				dfd.addServices(service);
+			DFService.register(a, dfd);
+		}
+        catch (Exception e) { 
+            e.printStackTrace(); 
+        }
+	}
+    
 	public static List<AID> getService(Agent a, String service)
 	{
 		DFAgentDescription dfd = new DFAgentDescription();

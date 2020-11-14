@@ -120,15 +120,18 @@ public class Truck extends Agent {
 	}
 
 	public void setAvailable() {
-
+		
+		List<ServiceDescription> services = new ArrayList<>();
 		for (Compartment compartment : compartments) {
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("truck" + compartment.getType().name());
 			sd.setName(getLocalName());
 			Property property = new Property("capacity", compartment.getCapacity());
 			sd.addProperties(property);
-			DFUtils.register(this, sd);
+			services.add(sd);
+			
 		}
+		DFUtils.registerMultipleServices(this, services);	
 	}
 
 	public void setOccupied() {
