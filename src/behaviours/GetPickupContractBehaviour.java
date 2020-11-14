@@ -50,7 +50,7 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 			if (!msgProt.equals("CPROP"))
 				return false;
 			
-			return (truck.hasType(t_type) && truck.hasTypeCapacity(t_type, amount));
+			return (truck.hasType(t_type) && truck.hasTypeCapacity(t_type, amount) && truck.isAvailable());
 			
 		} catch (UnreadableException e) {
 			return false;
@@ -61,7 +61,7 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	private boolean performAction() {
 		// Simulate action execution by generating a random number
 		this.truck.startPickup(containerPos, containerAID);
-		this.truck.requestTrashPickup(this.containerAID, 15);
+		this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 1000, containerAID, 15));
 		return true;
 	}
 	

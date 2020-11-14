@@ -27,7 +27,7 @@ public class App{
 			Central central = new Central();
 			Truck truck = new Truck("Simple", 100);
 			Truck truck2 = new Truck("Urgent", 30);
-			Container c = new Container(TrashType.REGULAR, 15);
+			Container c = new Container(TrashType.REGULAR, 15, new Position(-5,10));
 			ac1 = container.acceptNewAgent("central", central);
 			ac2 = container.acceptNewAgent("truck1", truck);
 			ac3 = container.acceptNewAgent("container", c);

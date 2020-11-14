@@ -1,6 +1,8 @@
 package general;
 
-public class Position {
+import jade.util.leap.Serializable;
+
+public class Position implements Serializable{
 	
 	private int x;
 	private int y;
@@ -36,6 +38,11 @@ public class Position {
 	{
 	  return this.getStep(destination, 1);
 	}
+	
+	public void sum(Position pos) {
+		this.x += pos.x;
+		this.y += pos.y;
+	}
 
 	private int diffY(Position pos)
 	{
@@ -59,4 +66,10 @@ public class Position {
 	  Position pos = (Position) o;
 	  return this.x == pos.x && this.y == pos.y;
 	}
+	
+	@Override
+    public String toString() {
+        return "Position [x=" + x + ", y=" + y
+                + "]";
+    }
 }

@@ -20,8 +20,9 @@ public class Container extends Agent {
 	private boolean isAwaitingTruck = false;
 	private final int rate = 500;
 
-	public Container(TrashType type, int capacity) {
+	public Container(TrashType type, int capacity, Position pos) {
 		this.compartment = new Compartment(type, capacity);
+		this.pos = pos;
 	}
 
 	public void setup() {

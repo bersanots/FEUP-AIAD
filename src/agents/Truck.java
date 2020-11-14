@@ -10,6 +10,7 @@ import general.PickupRequest;
 import general.Position;
 import general.TrashType;
 import behaviours.GetPickupContractBehaviour;
+import behaviours.MoveTruckBehaviour;
 import behaviours.PickupTrashBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
@@ -24,7 +25,7 @@ import jade.proto.AchieveREInitiator;
 public class Truck extends Agent {
 
 	private List<Compartment> compartments;
-	private Position pos;
+	private Position pos = new Position(0, 0);
 	private PickupRequest pickupRequest = null;
 
 	public Truck(String type, int total_capacity) {
@@ -64,9 +65,9 @@ public class Truck extends Agent {
 		return msg;
 	}
 
-	public void requestTrashPickup(AID container_AID, int amount) {
+	public void requestTrashPickup(AID containerAID, int amount) {
 
-		ACLMessage msg = this.buildPickupGarbageMsg(container_AID, amount);
+		ACLMessage msg = this.buildPickupGarbageMsg(containerAID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 	
@@ -144,7 +145,33 @@ public class Truck extends Agent {
 	}
 	
 	public boolean isAvailable() {
-		return this.pickupRequest != null;
+		return this.pickupRequest == null && pos.equals(new Position(0,0));
+	}
+	
+	public boolean isReturning() {
+		return !this.isAvailable() && this.pickupRequest == null;
+	}
+	
+	public boolean reachedContainer() {
+		if (pickupRequest != null)
+			return this.pos.getDistance(pickupRequest.getPos()) == 0;
+		else return false;		
+	}
+	
+	public boolean reachedCentral() {
+		if (pickupRequest != null)
+			return this.pos.getDistance( new Position(0,0) ) == 0;
+		else return false;		
+	}
+	
+	public void moveTowardsPickup() {
+		System.out.println("Moving toward container: " + this.pos.toString() );
+		this.pos.sum( this.pos.getUnitaryStep( pickupRequest.getPos() ) );
+	}
+	
+	public void moveTowardsCentral() {
+		System.out.println("Moving toward central: " + this.pos.toString() );
+		this.pos.sum( this.pos.getUnitaryStep( new Position(0,0) ) );
 	}
 	
 	public void startPickup(Position pos, AID id) {
@@ -153,9 +180,14 @@ public class Truck extends Agent {
 		this.setOccupied();
 	}
 	
+	public void returnToCentral() {
+		this.pickupRequest = null;
+	}
+	
 	public void endPickup() {
 		System.out.println(this.getLocalName() + " ended pickup");
 		this.pickupRequest = null;
+		this.emptyCompartments();
 		this.setAvailable();
 	}
 
