@@ -49,7 +49,7 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 
 	@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+		System.out.println("Agent " + refuse.getSender().getLocalName() + " refused to order pickup");
 		this.container.stopAwaitingTruck();
 	}
 
@@ -59,19 +59,19 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 			// does not exist
 			System.out.println("Responder does not exist");
 		} else {
-			System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+			System.out.println("Agent " + failure.getSender().getLocalName() + " failed to order pickup");
 		}
 		this.container.stopAwaitingTruck();
 	}
 
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		System.out.println("Agent " + agree.getSender().getName() + "agreed to perform the requested action");
+		System.out.println("Agent " + agree.getSender().getLocalName() + " agreed to order pickup");
 	}
 
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
+		System.out.println("Agent " + inform.getSender().getLocalName() + " successfully ordered pickup");
 
 		// try {
 		Object[] oMsg;
@@ -80,7 +80,7 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 			String req = (String) oMsg[0];
 			String status = (String) oMsg[1];
 			if (status.equals("OK")) {
-				System.out.println("PICKUP ORDERED YAY");
+				System.out.println("PICKUP ORDERED");
 			}
 			else {
 				System.out.println("NO TRUCK COMING :'(");

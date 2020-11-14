@@ -37,19 +37,19 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": REQUEST received from "
-				+ request.getSender().getName() ); //+ ". Action is " + request.getContent());
+		System.out.println("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from "
+				+ request.getSender().getLocalName() );
 		if (checkAction()) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
 			// don't want to send it.
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Agree");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Agrees to pickup");
 			ACLMessage agree = request.createReply();
 			agree.setPerformative(ACLMessage.AGREE);
 			return agree;
 		} else {
 			// We refuse to perform the action
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuse");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuses Pickup");
 			throw new RefuseException("check-failed");
 		}
 	}
@@ -59,7 +59,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 		
 		int trashTaken = giveTrashToTruck();
 		if ( trashTaken >= 0) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Trash successfully removed");
 			ACLMessage inform = request.createReply();
 			
 			Object[] oMsg=new Object[3];
@@ -76,7 +76,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action failed");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Failed to remove trash");
 			throw new FailureException("unexpected-error");
 		}
 	}

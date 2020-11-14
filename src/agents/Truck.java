@@ -165,12 +165,12 @@ public class Truck extends Agent {
 	}
 	
 	public void moveTowardsPickup() {
-		System.out.println("Moving toward container: " + this.pos.toString() );
+		System.out.println(this.getLocalName() +": Moving toward container: " + this.pos.toString() );
 		this.pos.sum( this.pos.getUnitaryStep( pickupRequest.getPos() ) );
 	}
 	
 	public void moveTowardsCentral() {
-		System.out.println("Moving toward central: " + this.pos.toString() );
+		System.out.println(this.getLocalName() +": Moving toward central: " + this.pos.toString() );
 		this.pos.sum( this.pos.getUnitaryStep( new Position(0,0) ) );
 	}
 	

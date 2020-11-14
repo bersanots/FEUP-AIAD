@@ -36,7 +36,7 @@ public class App{
 			ac5 = container.acceptNewAgent("container2", c2);
 			ac1.start();
 			ac3.start();
-			//ac2.start();
+			ac2.start();
 			ac4.start();
 			ac5.start();
 		} catch (StaleProxyException e) {

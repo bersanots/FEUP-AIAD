@@ -86,19 +86,19 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 
 	@Override
 	protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": CFP received from " + cfp.getSender().getName()
-				+ ". Action is ");
+		/*System.out.println("Agent " + this.getAgent().getLocalName() + ": CFP received from " + cfp.getSender().getLocalName()
+				+ ". Action is ");*/
 		
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name());
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name() + " Pickup");
 			ACLMessage propose = cfp.createReply();
 			propose.setPerformative(ACLMessage.PROPOSE);
 			buildProposal(propose);
 			return propose;
 		} else {
 			// We refuse to provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuse");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refused Pickup");
 			throw new RefuseException("evaluation-failed");
 		}
 	}
@@ -106,19 +106,19 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposal accepted");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup proposal accepted");
 		if (performAction()) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": starting pickup");
 			ACLMessage inform = accept.createReply();
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action execution failed");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": failed to start pickup");
 			throw new FailureException("unexpected-error");
 		}
 	}
 
 	protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposal rejected");
+		System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup Proposal rejected");
 	}
 }
