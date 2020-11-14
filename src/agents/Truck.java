@@ -1,9 +1,14 @@
 package agents;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import general.DFUtils;
+import general.TrashType;
+import behaviours.GetPickupContractBehaviour;
+import behaviours.PickupTrashBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -24,16 +29,16 @@ public class Truck extends Agent {
 		switch (type) {
 
 		case "Recycling":
-			compartments.add(new Compartment(TRASH_TYPE.BLUE, total_capacity / 3));
-			compartments.add(new Compartment(TRASH_TYPE.YELLOW, total_capacity / 3));
-			compartments.add(new Compartment(TRASH_TYPE.GREEN, total_capacity / 3));
+			compartments.add(new Compartment(TrashType.BLUE, total_capacity / 3));
+			compartments.add(new Compartment(TrashType.YELLOW, total_capacity / 3));
+			compartments.add(new Compartment(TrashType.GREEN, total_capacity / 3));
 			break;
 		case "Urgent":
-			compartments.add(new Compartment(TRASH_TYPE.REGULAR, total_capacity / 2));
-			compartments.add(new Compartment(TRASH_TYPE.ORGANIC, total_capacity / 2));
+			compartments.add(new Compartment(TrashType.REGULAR, total_capacity / 2));
+			compartments.add(new Compartment(TrashType.ORGANIC, total_capacity / 2));
 			break;
 		case "Simple":// simple (1 compartment)
-			compartments.add(new Compartment(TRASH_TYPE.REGULAR, total_capacity));
+			compartments.add(new Compartment(TrashType.REGULAR, total_capacity));
 			break;
 		}
 	}
@@ -55,7 +60,7 @@ public class Truck extends Agent {
 		return msg;
 	}
 
-	void requestTrashPickup(AID container_AID, int amount) {
+	public void requestTrashPickup(AID container_AID, int amount) {
 
 		ACLMessage msg = this.buildPickupGarbageMsg(container_AID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
@@ -77,7 +82,7 @@ public class Truck extends Agent {
 		System.out.println(getLocalName() + ": done working.");
 	}
 
-	private Compartment getTypeCompartment(TRASH_TYPE type) {
+	private Compartment getTypeCompartment(TrashType type) {
 
 		for (Compartment compartment : compartments) {
 			if (compartment.getType() == type)
@@ -86,19 +91,19 @@ public class Truck extends Agent {
 		return null;
 	}
 	
-	public boolean hasTypeCapacity(TRASH_TYPE type, int amount) {
+	public boolean hasTypeCapacity(TrashType type, int amount) {
 
 		Compartment c = getTypeCompartment(type);
 		return c.hasCapacity(amount);
 	}
 	
-	public int getTypeCapacity(TRASH_TYPE type) {
+	public int getTypeCapacity(TrashType type) {
 
 		Compartment c = getTypeCompartment(type);
 		return c.getCapacity();
 	}
 
-	public boolean hasType(TRASH_TYPE type) {
+	public boolean hasType(TrashType type) {
 
 		for (Compartment compartment : compartments) {
 			if (compartment.getType() == type)
@@ -107,7 +112,7 @@ public class Truck extends Agent {
 		return false;
 	}
 
-	public void pickupGarbage(TRASH_TYPE type, int amount) {
+	public void pickupGarbage(TrashType type, int amount) {
 
 		Compartment compartment = this.getTypeCompartment(type);
 

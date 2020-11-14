@@ -1,7 +1,9 @@
-package agents;
+package behaviours;
 
 import java.io.IOException;
 
+import agents.Truck;
+import general.TrashType;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
@@ -13,10 +15,10 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
 
-class GetPickupContractBehaviour extends ContractNetResponder {
+public class GetPickupContractBehaviour extends ContractNetResponder {
 	
 	private Truck truck;
-	private TRASH_TYPE t_type = TRASH_TYPE.REGULAR;
+	private TrashType t_type = TrashType.REGULAR;
 	private AID containerAID;
 
 	public GetPickupContractBehaviour(Truck a) {
@@ -38,7 +40,7 @@ class GetPickupContractBehaviour extends ContractNetResponder {
 			oMsg = (Object[]) cfp.getContentObject();
 			
 			String msgProt = (String) oMsg[0];
-			this.t_type = (TRASH_TYPE)oMsg[1];
+			this.t_type = (TrashType)oMsg[1];
 			int amount = (int)oMsg[2];
 			this.containerAID = (AID) oMsg[3];
 			

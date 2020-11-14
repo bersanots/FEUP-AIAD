@@ -1,5 +1,9 @@
 package agents;
 
+import behaviours.GiveTrashBehaviour;
+
+import behaviours.RequestPickupBehaviour;
+import general.TrashType;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
@@ -14,7 +18,7 @@ public class Container extends Agent {
 	private boolean isAwaitingTruck = false;
 	private final int rate = 500;
 
-	public Container(TRASH_TYPE type, int capacity) {
+	public Container(TrashType type, int capacity) {
 		this.compartment = new Compartment(type, capacity);
 	}
 

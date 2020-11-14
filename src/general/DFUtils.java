@@ -1,5 +1,4 @@
-package agents;
-
+package general;
 import java.util.ArrayList;
 import java.util.List;
 

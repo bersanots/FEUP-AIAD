@@ -2,6 +2,7 @@ package agents;
 
 import java.util.*;
 
+import behaviours.OrderPickupBehaviour;
 import jade.core.Agent;
 
 public class Central extends Agent {

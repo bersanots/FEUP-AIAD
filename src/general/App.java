@@ -1,5 +1,9 @@
-package agents;
+package general;
 
+import agents.Central;
+
+import agents.Container;
+import agents.Truck;
 import jade.core.*;
 import jade.core.Runtime;
 import jade.wrapper.*;
@@ -23,7 +27,7 @@ public class App{
 			Central central = new Central();
 			Truck truck = new Truck("Simple", 100);
 			Truck truck2 = new Truck("Urgent", 30);
-			Container c = new Container(TRASH_TYPE.REGULAR, 50);
+			Container c = new Container(TrashType.REGULAR, 50);
 			ac1 = container.acceptNewAgent("central", central);
 			ac2 = container.acceptNewAgent("truck1", truck);
 			ac3 = container.acceptNewAgent("container", c);

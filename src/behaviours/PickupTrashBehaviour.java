@@ -1,15 +1,17 @@
-package agents;
+package behaviours;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
+import agents.Truck;
+import general.TrashType;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
 
-class PickupTrashBehaviour extends AchieveREInitiator {
+public class PickupTrashBehaviour extends AchieveREInitiator {
 	
 	
 	private Truck truck;
@@ -50,7 +52,7 @@ class PickupTrashBehaviour extends AchieveREInitiator {
 		try {
 			Object[] oMsg= (Object[]) inform.getContentObject();
 			String req = (String) oMsg[0];
-			TRASH_TYPE trashType = (TRASH_TYPE) oMsg[1];
+			TrashType trashType = (TrashType) oMsg[1];
 			int amount = (Integer) oMsg[2];
 			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
 			this.truck.pickupGarbage(trashType, amount);

@@ -2,19 +2,17 @@ package agents;
 
 import java.util.Random;
 
+import general.TrashType;
 import jade.core.Agent;
 
-enum TRASH_TYPE {
-	BLUE, GREEN, YELLOW, REGULAR, ORGANIC, ELETRONIC
-}
 
 public class Compartment {
 
 	private final int capacity;
 	private int current_amount = 0;
-	private TRASH_TYPE type;
+	private TrashType type;
 
-	public Compartment(TRASH_TYPE type, int capacity) {
+	public Compartment(TrashType type, int capacity) {
 
 		this.capacity = capacity;
 		this.type = type;
@@ -40,7 +38,7 @@ public class Compartment {
 		return this.type == compartment.type;
 	}
 
-	public TRASH_TYPE getType() {
+	public TrashType getType() {
 		return type;
 	}
 	

@@ -1,8 +1,11 @@
-package agents;
+package behaviours;
+
+import general.DFUtils;
+import general.TrashType;
 
 import java.io.IOException;
 import java.util.List;
-
+import agents.Central;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
@@ -16,11 +19,11 @@ import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
-class OrderPickupBehaviour extends AchieveREResponder {
+public class OrderPickupBehaviour extends AchieveREResponder {
 
 	private Central central;
 	private int amount = 0;
-	private TRASH_TYPE trashType = TRASH_TYPE.REGULAR;
+	private TrashType trashType = TrashType.REGULAR;
 
 	public OrderPickupBehaviour(Central central) {
 		
@@ -42,7 +45,7 @@ class OrderPickupBehaviour extends AchieveREResponder {
 			Object[] oMsg = (Object[]) request.getContentObject();
 			String req = (String) oMsg[0];
 			if (req.equals("REQPIC")) {
-			this.trashType = (TRASH_TYPE) oMsg[1];
+			this.trashType = (TrashType) oMsg[1];
 			this.amount = (Integer) oMsg[2];
 			System.out.println("REQUEST CONTENT: " + req + " " + trashType.name() + " " + amount);
 			}
@@ -57,7 +60,7 @@ class OrderPickupBehaviour extends AchieveREResponder {
 		return ret;
 	}
 
-	protected boolean performAction(TRASH_TYPE t_type, int amount, AID containerAID) {
+	protected boolean performAction(TrashType t_type, int amount, AID containerAID) {
 		
 		List<AID> truckIds = DFUtils.getService(central, "truck" + t_type.name());
 		System.out.println("ACTIONI");

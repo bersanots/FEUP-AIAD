@@ -1,10 +1,12 @@
-package agents;
+package behaviours;
 
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import agents.Central;
+import general.TrashType;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
@@ -16,9 +18,9 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 	
 	private Central central;
 	private int amount = 0;
-	private TRASH_TYPE trashType = TRASH_TYPE.REGULAR;
+	private TrashType trashType = TrashType.REGULAR;
 
-	public SetPickupContractBehaviour(Central central, int amount, TRASH_TYPE trashType, List<AID> truckAIDs, AID containerAID) {
+	public SetPickupContractBehaviour(Central central, int amount, TrashType trashType, List<AID> truckAIDs, AID containerAID) {
 		super(central, buildMsg(amount, trashType, truckAIDs, containerAID));
 		// TODO Auto-generated constructor stub
 		this.central = central;
@@ -29,7 +31,7 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 	private boolean evaluateProposal(Object o) {
 		Object[] oMsg = (Object[]) o;
 		String msgProt = (String) oMsg[0];
-		TRASH_TYPE t_type = (TRASH_TYPE)oMsg[1];
+		TrashType t_type = (TrashType)oMsg[1];
 		int capacity = (int)oMsg[2];
 		
 		if (!msgProt.equals("TPROP"))
@@ -39,7 +41,7 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 		
 	}
 
-	protected static ACLMessage buildMsg(int amount, TRASH_TYPE trashType, List<AID> truckAIDs, AID containerAID) {
+	protected static ACLMessage buildMsg(int amount, TrashType trashType, List<AID> truckAIDs, AID containerAID) {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
   		for (AID truckAID : truckAIDs) {
   			msg.addReceiver(truckAID);

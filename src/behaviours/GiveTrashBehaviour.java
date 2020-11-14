@@ -1,7 +1,10 @@
-package agents;
+package behaviours;
 
 import java.io.IOException;
 
+
+import agents.Compartment;
+import agents.Container;
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -11,7 +14,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
-class GiveTrashBehaviour extends AchieveREResponder {
+public class GiveTrashBehaviour extends AchieveREResponder {
 
 	private Compartment compartment;
 	
