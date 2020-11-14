@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import agents.Central;
+import general.Position;
 import general.TrashType;
 import jade.core.AID;
 import jade.core.Agent;
@@ -20,8 +21,8 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 	private int amount = 0;
 	private TrashType trashType = TrashType.REGULAR;
 
-	public SetPickupContractBehaviour(Central central, int amount, TrashType trashType, List<AID> truckAIDs, AID containerAID) {
-		super(central, buildMsg(amount, trashType, truckAIDs, containerAID));
+	public SetPickupContractBehaviour(Central central, int amount, TrashType trashType, Position pos, List<AID> truckAIDs, AID containerAID) {
+		super(central, buildMsg(amount, trashType, pos, truckAIDs, containerAID));
 		// TODO Auto-generated constructor stub
 		this.central = central;
 		this.amount = amount;
@@ -41,7 +42,8 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 		
 	}
 
-	protected static ACLMessage buildMsg(int amount, TrashType trashType, List<AID> truckAIDs, AID containerAID) {
+	protected static ACLMessage buildMsg(int amount, TrashType trashType, Position pos,
+			List<AID> truckAIDs, AID containerAID) {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
   		for (AID truckAID : truckAIDs) {
   			msg.addReceiver(truckAID);
@@ -49,11 +51,13 @@ class SetPickupContractBehaviour extends ContractNetInitiator {
 			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 			// We want to receive a reply in 10 secs
 			//msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-			Object[] oMsg = new Object[4];
+			Object[] oMsg = new Object[5];
 			oMsg[0] = "CPROP";
 			oMsg[1] = trashType;
 			oMsg[2] = amount;
-			oMsg[3] = containerAID;
+			oMsg[3] = pos;
+			oMsg[4] = containerAID;
+			
 			try {
 				msg.setContentObject(oMsg);
 			} catch (IOException e) {

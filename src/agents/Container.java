@@ -3,6 +3,7 @@ package agents;
 import behaviours.GiveTrashBehaviour;
 
 import behaviours.RequestPickupBehaviour;
+import general.Position;
 import general.TrashType;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -15,6 +16,7 @@ import jade.lang.acl.MessageTemplate;
 public class Container extends Agent {
 
 	private Compartment compartment;
+	private Position pos;
 	private boolean isAwaitingTruck = false;
 	private final int rate = 500;
 
@@ -50,12 +52,29 @@ public class Container extends Agent {
 			}
 			if (compartment.isFull() && !isAwaitingTruck) {
 				addBehaviour(new RequestPickupBehaviour(container));
-				//container.isAwaitingTruck = true;
 			}
 		}
 	}
 
 	public Compartment getCompartment() {
 		return this.compartment;
+	}
+	
+	public void waitForTruck() {
+		System.out.println(this.getLocalName() + " awaiting truck");
+		this.isAwaitingTruck = true;
+	}
+	
+	public void stopAwaitingTruck() {
+		System.out.println(this.getLocalName() + " single and ready to mingle");
+		this.isAwaitingTruck = false;
+	}
+
+	public Position getPos() {
+		return pos;
+	}
+
+	public void setPos(Position pos) {
+		this.pos = pos;
 	}
 }

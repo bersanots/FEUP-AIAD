@@ -16,25 +16,26 @@ import jade.proto.AchieveREInitiator;
 
 public class RequestPickupBehaviour extends AchieveREInitiator {
 	
-	
+	private Container container;
 	private Compartment compartment;
 	
 	public RequestPickupBehaviour(Container container) {
-		super(container, createMsg(container.getCompartment()));
-		
+		super(container, createMsg(container));
+		this.container = container;
 		this.compartment = container.getCompartment();
 		
 	}
 	
-	protected static ACLMessage createMsg(Compartment compartment) {
+	protected static ACLMessage createMsg(Container container) {
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 		msg.addReceiver(new AID("central", AID.ISLOCALNAME));
 		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		// msg.setContent("dummy-action");
-		Object[] oMsg = new Object[3];
+		Object[] oMsg = new Object[4];
 		oMsg[0] = "REQPIC";
-		oMsg[1] = compartment.getType();
-		oMsg[2] = compartment.getCurrentAmount();
+		oMsg[1] = container.getCompartment().getType();
+		oMsg[2] = container.getCompartment().getCurrentAmount();
+		oMsg[3] = container.getPos();
 		try {
 			msg.setContentObject(oMsg);
 		} catch (IOException e) {
@@ -76,6 +77,7 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 			//TRASH_TYPE trashType = (TRASH_TYPE) oMsg[1];
 			//int amount = (Integer) oMsg[2];
 			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
+			this.container.waitForTruck();
 			System.out.println("PICKUP ORDERED YAY");
 			/*} catch (UnreadableException e) {
 			// TODO Auto-generated catch block

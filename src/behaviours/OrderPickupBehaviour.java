@@ -1,6 +1,7 @@
 package behaviours;
 
 import general.DFUtils;
+import general.Position;
 import general.TrashType;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	private Central central;
 	private int amount = 0;
 	private TrashType trashType = TrashType.REGULAR;
+	private Position pos;
 
 	public OrderPickupBehaviour(Central central) {
 		
@@ -47,6 +49,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			if (req.equals("REQPIC")) {
 			this.trashType = (TrashType) oMsg[1];
 			this.amount = (Integer) oMsg[2];
+			this.pos = (Position) oMsg[3];
 			System.out.println("REQUEST CONTENT: " + req + " " + trashType.name() + " " + amount);
 			}
 			else 
@@ -67,7 +70,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 		for (AID truckId : truckIds) {
 			System.out.println("OI " + truckId.getName());
 		}
-		this.central.addBehaviour(new SetPickupContractBehaviour(this.central, amount, t_type, truckIds, containerAID));
+		this.central.addBehaviour(new SetPickupContractBehaviour(this.central, amount, t_type, this.pos,truckIds, containerAID));
 		return true;
 	}
 

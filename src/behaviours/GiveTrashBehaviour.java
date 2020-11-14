@@ -16,11 +16,13 @@ import jade.proto.AchieveREResponder;
 
 public class GiveTrashBehaviour extends AchieveREResponder {
 
+	private Container container;
 	private Compartment compartment;
 	
 	public GiveTrashBehaviour(Container container, MessageTemplate mt) {
 		super(container, mt);
 		// TODO Auto-generated constructor stub
+		this.container = container;
 		this.compartment = container.getCompartment();
 	}
 
@@ -28,8 +30,9 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 		return !this.compartment.isEmpty();
 	}
 
-	protected int performAction() {
-		return this.compartment.emptyCompartment();
+	protected int giveTrashToTruck() {
+		this.container.stopAwaitingTruck();
+		return this.compartment.emptyCompartment();		
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
 		
-		int trashTaken = performAction();
+		int trashTaken = giveTrashToTruck();
 		if ( trashTaken >= 0) {
 			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
 			ACLMessage inform = request.createReply();

@@ -3,6 +3,7 @@ package behaviours;
 import java.io.IOException;
 
 import agents.Truck;
+import general.Position;
 import general.TrashType;
 import jade.core.AID;
 import jade.core.Agent;
@@ -20,6 +21,7 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	private Truck truck;
 	private TrashType t_type = TrashType.REGULAR;
 	private AID containerAID;
+	private Position containerPos;
 
 	public GetPickupContractBehaviour(Truck a) {
 		super(a, buildTemplate());
@@ -42,7 +44,8 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 			String msgProt = (String) oMsg[0];
 			this.t_type = (TrashType)oMsg[1];
 			int amount = (int)oMsg[2];
-			this.containerAID = (AID) oMsg[3];
+			this.containerPos = (Position) oMsg[3];
+			this.containerAID = (AID) oMsg[4];
 			
 			if (!msgProt.equals("CPROP"))
 				return false;
@@ -57,6 +60,7 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 
 	private boolean performAction() {
 		// Simulate action execution by generating a random number
+		this.truck.startPickup(containerPos, containerAID);
 		this.truck.requestTrashPickup(this.containerAID, 15);
 		return true;
 	}

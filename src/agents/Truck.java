@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import general.DFUtils;
+import general.PickupRequest;
+import general.Position;
 import general.TrashType;
 import behaviours.GetPickupContractBehaviour;
 import behaviours.PickupTrashBehaviour;
@@ -22,6 +24,8 @@ import jade.proto.AchieveREInitiator;
 public class Truck extends Agent {
 
 	private List<Compartment> compartments;
+	private Position pos;
+	private PickupRequest pickupRequest = null;
 
 	public Truck(String type, int total_capacity) {
 
@@ -137,6 +141,22 @@ public class Truck extends Agent {
 			oi = oi + "Type: " + compartment.getType() + " | Amount: " + compartment.getCurrentAmount() + "\n";
 		}
 		return oi;
+	}
+	
+	public boolean isAvailable() {
+		return this.pickupRequest != null;
+	}
+	
+	public void startPickup(Position pos, AID id) {
+		this.pickupRequest = new PickupRequest(pos, id);
+		System.out.println(this.getLocalName() + " started pickup");
+		this.setOccupied();
+	}
+	
+	public void endPickup() {
+		System.out.println(this.getLocalName() + " ended pickup");
+		this.pickupRequest = null;
+		this.setAvailable();
 	}
 
 	public void setAvailable() {

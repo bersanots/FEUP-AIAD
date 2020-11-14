@@ -47,7 +47,6 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 	
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
 		
 		try {
 			Object[] oMsg= (Object[]) inform.getContentObject();
@@ -56,6 +55,8 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 			int amount = (Integer) oMsg[2];
 			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
 			this.truck.pickupGarbage(trashType, amount);
+			this.truck.endPickup();
+			System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action: " + req);
 			System.out.println(this.truck.showContents());
 		} catch (UnreadableException e) {
 			// TODO Auto-generated catch block
