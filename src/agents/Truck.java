@@ -9,6 +9,7 @@ import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
@@ -37,9 +38,9 @@ public class Truck extends Agent {
 		}
 	}
 
-	private ACLMessage buildPickupGarbageMsg(int amount) {
+	private ACLMessage buildPickupGarbageMsg(AID container_AID, int amount) {
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-		msg.addReceiver(new AID("container", AID.ISLOCALNAME));
+		msg.addReceiver(container_AID);
 		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		// msg.setContent("dummy-action");
 		Object[] oMsg = new Object[3];
@@ -54,9 +55,9 @@ public class Truck extends Agent {
 		return msg;
 	}
 
-	private void requestTrashPickup(int amount) {
+	private void requestTrashPickup(AID container_AID, int amount) {
 
-		ACLMessage msg = this.buildPickupGarbageMsg(amount);
+		ACLMessage msg = this.buildPickupGarbageMsg(container_AID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 
@@ -64,8 +65,8 @@ public class Truck extends Agent {
 		System.out.println("A new Truck was created!");
 		// add behaviours
 
-		requestTrashPickup(10);
-		requestTrashPickup(15);
+		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
+		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 15);
 		this.setAvailable();
 	}
 
@@ -124,19 +125,19 @@ public class Truck extends Agent {
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("truck" + compartment.getType().name());
 			sd.setName(getLocalName());
+			Property property = new Property("capacity", compartment.getCapacity());
+			sd.addProperties(property);
 			DFUtils.register(this, sd);
 		}
 	}
 
 	public void setOccupied() {
 
-		for (Compartment compartment : compartments) {
-			try {
-				DFService.deregister(this);
-			} catch (FIPAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			DFService.deregister(this);
+		} catch (FIPAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

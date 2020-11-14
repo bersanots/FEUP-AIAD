@@ -62,7 +62,7 @@ class OrderPickupBehaviour extends AchieveREResponder {
 		List<AID> truckIds = DFUtils.getService(central, "truck" + t_type.name());
 		System.out.println("ACTIONI");
 		for (AID truckId : truckIds) {
-			System.out.println("OI" + truckId.getName());
+			System.out.println("OI " + truckId.getName());
 		}
 		return true;
 	}
