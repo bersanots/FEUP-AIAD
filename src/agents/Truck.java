@@ -55,11 +55,13 @@ public class Truck extends Agent {
 		return msg;
 	}
 
-	private void requestTrashPickup(AID container_AID, int amount) {
+	void requestTrashPickup(AID container_AID, int amount) {
 
 		ACLMessage msg = this.buildPickupGarbageMsg(container_AID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
+	
+	
 
 	public void setup() {
 		System.out.println("A new Truck was created!");
@@ -68,6 +70,7 @@ public class Truck extends Agent {
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 15);
 		this.setAvailable();
+		addBehaviour(new GetPickupContractBehaviour(this));
 	}
 
 	public void takeDown() {
@@ -81,6 +84,18 @@ public class Truck extends Agent {
 				return compartment;
 		}
 		return null;
+	}
+	
+	public boolean hasTypeCapacity(TRASH_TYPE type, int amount) {
+
+		Compartment c = getTypeCompartment(type);
+		return c.hasCapacity(amount);
+	}
+	
+	public int getTypeCapacity(TRASH_TYPE type) {
+
+		Compartment c = getTypeCompartment(type);
+		return c.getCapacity();
 	}
 
 	public boolean hasType(TRASH_TYPE type) {
@@ -126,8 +141,6 @@ public class Truck extends Agent {
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("truck" + compartment.getType().name());
 			sd.setName(getLocalName());
-			Property property = new Property("capacity", compartment.getCapacity());
-			sd.addProperties(property);
 			services.add(sd);
 			
 		}

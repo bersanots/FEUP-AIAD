@@ -8,6 +8,7 @@ import jade.core.Agent;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -56,14 +57,14 @@ class OrderPickupBehaviour extends AchieveREResponder {
 		return ret;
 	}
 
-	protected boolean performAction(TRASH_TYPE t_type) {
-		
+	protected boolean performAction(TRASH_TYPE t_type, int amount, AID containerAID) {
 		
 		List<AID> truckIds = DFUtils.getService(central, "truck" + t_type.name());
 		System.out.println("ACTIONI");
 		for (AID truckId : truckIds) {
 			System.out.println("OI " + truckId.getName());
 		}
+		this.central.addBehaviour(new SetPickupContractBehaviour(this.central, amount, t_type, truckIds, containerAID));
 		return true;
 	}
 
@@ -94,7 +95,7 @@ class OrderPickupBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-		if (performAction(this.trashType)) {
+		if (performAction(this.trashType, this.amount, request.getSender())) {
 			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
 			ACLMessage inform = request.createReply();
 

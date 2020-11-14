@@ -11,7 +11,7 @@ enum TRASH_TYPE {
 public class Compartment {
 
 	private final int capacity;
-	private int current_amount = 20;
+	private int current_amount = 0;
 	private TRASH_TYPE type;
 
 	public Compartment(TRASH_TYPE type, int capacity) {

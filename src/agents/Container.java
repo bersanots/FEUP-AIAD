@@ -46,7 +46,7 @@ public class Container extends Agent {
 			}
 			if (compartment.isFull() && !isAwaitingTruck) {
 				addBehaviour(new RequestPickupBehaviour(container));
-				container.isAwaitingTruck = true;
+				//container.isAwaitingTruck = true;
 			}
 		}
 	}

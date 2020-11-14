@@ -7,6 +7,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 
@@ -49,11 +50,13 @@ public final class DFUtils {
         }
 	}
     
-	public static List<AID> getService(Agent a, String service)
+	public static List<AID> getServiceWithProperty(Agent a, String service, Property property)
 	{
 		DFAgentDescription dfd = new DFAgentDescription();
    		ServiceDescription sd = new ServiceDescription();
    		sd.setType(service);
+   		if (property != null)
+   			sd.addProperties(property); //add property
 		dfd.addServices(sd);
 		
 		SearchConstraints constraints = new SearchConstraints();
@@ -71,6 +74,11 @@ public final class DFUtils {
             e.printStackTrace(); 
         }
       	return null;
+	}
+	
+	public static List<AID> getService(Agent a, String service)
+	{
+		return getServiceWithProperty(a, service, null);
 	}
 	
 }
