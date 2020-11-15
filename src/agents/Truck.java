@@ -81,12 +81,10 @@ public class Truck extends Agent {
 		ACLMessage msg = this.buildPickupGarbageMsg(containerAID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
-	
+
 	public void requestTrashFullPickup() {
 		requestTrashPickup(-1);
 	}
-	
-	
 
 	public void setup() {
 		App.LOGGER.log("A new Truck was created!", true);
@@ -111,13 +109,13 @@ public class Truck extends Agent {
 		}
 		return null;
 	}
-	
+
 	public boolean hasTypeCapacity(TrashType type, int amount) {
 
 		Compartment c = getTypeCompartment(type);
 		return c.hasCapacity(amount);
 	}
-	
+
 	public int getTypeCapacity(TrashType type) {
 
 		Compartment c = getTypeCompartment(type);
@@ -155,45 +153,48 @@ public class Truck extends Agent {
 	public String showContents() {
 		String content_str = "";
 		for (Compartment compartment : compartments) {
-			content_str = content_str + "Type: " + compartment.getType() + " | Amount: " + compartment.getCurrentAmount() + " - ";
+			content_str = content_str + "Type: " + compartment.getType() + " | Amount: "
+					+ compartment.getCurrentAmount() + " - ";
 		}
 		return content_str.substring(0, content_str.length() - 3);
 	}
-	
+
 	public boolean isAvailable() {
-		return this.pickupRequest == null && pos.equals(new Position(0,0));
+		return this.pickupRequest == null && pos.equals(new Position(0, 0));
 	}
-	
+
 	public boolean isReturning() {
 		return !this.isAvailable() && this.pickupRequest == null;
 	}
-	
+
 	public boolean reachedContainer() {
 		if (pickupRequest != null)
 			return this.pos.getDistance(pickupRequest.getPos()) == 0;
-		else return false;		
+		else
+			return false;
 	}
-	
+
 	public boolean reachedCentral() {
 		if (pickupRequest != null)
-			return this.pos.getDistance( new Position(0,0) ) == 0;
-		else return false;		
+			return this.pos.getDistance(new Position(0, 0)) == 0;
+		else
+			return false;
 	}
-	
+
 	public void moveTowardsPickup() {
 		App.LOGGER.log(this.getLocalName() +" ==> " + this.pickupRequest.getContainerAID().getLocalName() + " : " + this.pos.toString() , true);
 		Position step = this.pos.getUnitaryStep( pickupRequest.getPos());
 		this.distance.sum(step.abs());
 		this.pos.sum(step);
 	}
-	
+
 	public void moveTowardsCentral() {
 		App.LOGGER.log(this.getLocalName() +" ==> central : " + this.pos.toString() , true);
 		Position step = this.pos.getUnitaryStep( new Position(0,0));
 		this.distance.sum(step.abs());
 		this.pos.sum(step);
 	}
-	
+
 	public void startPickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
 		this.setLoggingVars();
@@ -201,16 +202,16 @@ public class Truck extends Agent {
 		App.LOGGER.log(this.getLocalName() + " started pickup", true);
 		this.setOccupied();
 	}
-	
+
 	public void startIntermediatePickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
 		App.LOGGER.log(this.getLocalName() + " started intermediate pickup", true);
 	}
-	
+
 	public void returnToCentral() {
 		this.pickupRequest = null;
 	}
-	
+
 	public void endPickup() {
 		App.LOGGER.log(this.getLocalName(), "1 - RETURNED");
 		Date curr_time = new Date(System.currentTimeMillis());
@@ -238,16 +239,16 @@ public class Truck extends Agent {
 	}
 
 	public void setAvailable() {
-		
+
 		List<ServiceDescription> services = new ArrayList<>();
 		for (Compartment compartment : compartments) {
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("truck" + compartment.getType().name());
 			sd.setName(getLocalName());
 			services.add(sd);
-			
+
 		}
-		DFUtils.registerMultipleServices(this, services);	
+		DFUtils.registerMultipleServices(this, services);
 	}
 
 	public void setOccupied() {
@@ -259,13 +260,13 @@ public class Truck extends Agent {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void searchForContainers() {
-		
+
 		isScanning = true;
-		
+
 		List<AID> containerIds = new ArrayList<>();
-		for (Compartment compartment: compartments) {
+		for (Compartment compartment : compartments) {
 			TrashType t_type = compartment.getType();
 			List<AID> typeContainerIds = DFUtils.getService(this, "container" + t_type.name());
 			containerIds.addAll(typeContainerIds);			
@@ -278,7 +279,7 @@ public class Truck extends Agent {
 		} else {
 			isScanning = false;
 		}
-		
+
 	}
 
 	public boolean isScanning() {
