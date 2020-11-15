@@ -20,9 +20,7 @@ import jade.lang.acl.ACLMessage;
 import jade.proto.SubscriptionInitiator;
 
 public class Central extends Agent {
-
-	private Set<Truck> trucks = new HashSet<>();
-	private Set<Container> containers = new HashSet<>();
+	
 	private Position pos = new Position(0, 0);
 	private ConcurrentLinkedQueue<PickupRequestInfo> requestQueue;
 
@@ -78,22 +76,6 @@ public class Central extends Agent {
 		else {
 			insertRequest(reqInfo);
 		}
-	}
-
-	public void addTruck(Truck t) {
-		trucks.add(t);
-	}
-
-	public void addContainer(Container c) {
-		containers.add(c);
-	}
-
-	public Set<Truck> getTrucks() {
-		return trucks;
-	}
-
-	public Set<Container> getContainers() {
-		return containers;
 	}
 
 	synchronized public void insertRequest(PickupRequestInfo req) {		
