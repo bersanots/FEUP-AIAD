@@ -36,10 +36,10 @@ public class App {
 
 		try {
 			central = new Central();
-			App.buildContainers(1, 50);			
-			App.buildTrucks("allcomp", 100, 2, true);
+			parseArgs(args);
 
 			List<AgentController> acs = buildAgentControllerList(container);
+			
 
 			startAgents(acs);
 
@@ -182,5 +182,16 @@ public class App {
 	
 	private static void parseArgs(String args[]) {
 		
+		if (args.length != 5)
+			System.exit(-1);
+		
+		String truckCombination = args[0];
+		int truckNum = Integer.parseInt(args[1]);
+		int truckCapacity = Integer.parseInt(args[2]);
+		int containerNum = Integer.parseInt(args[3]);
+		int containerCapacity = Integer.parseInt(args[4]);
+
+		App.buildContainers(containerNum, containerCapacity);			
+		App.buildTrucks(truckCombination, truckCapacity, truckNum, true);
 	}
 }
