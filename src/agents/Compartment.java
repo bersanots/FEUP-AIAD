@@ -111,10 +111,10 @@ public class Compartment {
 			prob = 7;
 			break;
 		case ORGANIC:
-			prob = 100;
+			prob = 2;
 			break;
 		case REGULAR:
-			prob = 10;
+			prob = 36;
 			break;
 		case YELLOW:
 			prob = 12;
