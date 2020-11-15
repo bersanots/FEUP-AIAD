@@ -92,14 +92,14 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 		
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name() + " Pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name() + " Pickup", true);
 			ACLMessage propose = cfp.createReply();
 			propose.setPerformative(ACLMessage.PROPOSE);
 			buildProposal(propose);
 			return propose;
 		} else {
 			// We refuse to provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refused Pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refused Pickup", true);
 			throw new RefuseException("evaluation-failed");
 		}
 	}
@@ -107,19 +107,19 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup proposal accepted");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": pickup proposal accepted", true);
 		if (performAction()) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": starting pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": starting pickup", true);
 			ACLMessage inform = accept.createReply();
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": failed to start pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": failed to start pickup", true);
 			throw new FailureException("unexpected-error");
 		}
 	}
 
 	protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup Proposal rejected");
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": pickup Proposal rejected", true);
 	}
 }

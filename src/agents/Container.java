@@ -28,7 +28,7 @@ public class Container extends Agent {
 
 	public void setup() {
 		addBehaviour(new TrashGenerationBehaviour(this, rate));
-		App.LOGGER.log("{CONTAINER} A new Container was created!", true);
+		App.LOGGER.log("A new Container was created!", true);
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -37,7 +37,7 @@ public class Container extends Agent {
 	}
 
 	public void takeDown() {
-		App.LOGGER.log("{CONTAINER} " + getLocalName() + ": done working.", true);
+		App.LOGGER.log(getLocalName() + ": done working.", true);
 	}
 
 	class TrashGenerationBehaviour extends TickerBehaviour {
@@ -63,12 +63,12 @@ public class Container extends Agent {
 	}
 	
 	public void waitForTruck() {
-		App.LOGGER.log("{CONTAINER} " + this.getLocalName() + " awaiting truck", true);
+		App.LOGGER.log(this.getLocalName() + " is full. Awaiting truck", true);
 		this.isAwaitingTruck = true;
 	}
 	
 	public void stopAwaitingTruck() {
-		App.LOGGER.log("{CONTAINER} " + this.getLocalName() + " single and ready to mingle", true);
+		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
 		this.isAwaitingTruck = false;
 	}
 

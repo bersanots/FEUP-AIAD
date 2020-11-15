@@ -31,7 +31,7 @@ public class Central extends Agent {
 	}
 
 	public void setup() {
-		App.LOGGER.log("{CENTRAL} A new Central was created!", true);
+		App.LOGGER.log("A new Central was created!", true);
 		// add behaviours
 		addBehaviour(new OrderPickupBehaviour(this));
 
@@ -45,7 +45,6 @@ public class Central extends Agent {
 				try {
 					DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent());
 					
-					// do something with dfds
 					Central central = (Central) myAgent;
 					
 					central.requestPendingPickups();
@@ -59,7 +58,7 @@ public class Central extends Agent {
 	
 	public void requestPendingPickups() {
 		int queueStartingSize = requestQueue.size();
-		App.LOGGER.log("{QUEUE} Pending Requests: " + queueStartingSize, true);
+		App.LOGGER.log("Pending Requests: " + queueStartingSize + " (A truck has joined/left the central)", true);
 		for (int i = 0; i < queueStartingSize; i++) {
 
 			PickupRequestInfo reqInfo = popRequest();
@@ -71,7 +70,7 @@ public class Central extends Agent {
 		TrashType t_type = reqInfo.getTrashType();
 		List<AID> truckIds = DFUtils.getService(this, "truck" + t_type.name());
 		for (AID truckId : truckIds) {
-			App.LOGGER.log("OI " + truckId.getName(), true);
+			App.LOGGER.log("Available for pickup: " + truckId.getLocalName(), true);
 		}
 		if (truckIds.size() != 0) {
 			this.addBehaviour(new SetPickupContractBehaviour(this, reqInfo, truckIds));
@@ -99,7 +98,7 @@ public class Central extends Agent {
 
 	synchronized public void insertRequest(PickupRequestInfo req) {		
 		this.requestQueue.add(req);
-		App.LOGGER.log("{QUEUE} + Requests Pending: " + requestQueue.size(), true);
+		App.LOGGER.log("Request added. Pending: " + requestQueue.size(), true);
 	}
 
 	synchronized public PickupRequestInfo peekRequest() {

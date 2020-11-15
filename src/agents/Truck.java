@@ -75,7 +75,7 @@ public class Truck extends Agent {
 	
 
 	public void setup() {
-		App.LOGGER.log("{TRUCK} A new Truck was created!", true);
+		App.LOGGER.log("A new Truck was created!", true);
 		// add behaviours
 
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
@@ -85,7 +85,7 @@ public class Truck extends Agent {
 	}
 
 	public void takeDown() {
-		App.LOGGER.log("{TRUCK} " +getLocalName() + ": done working.", true);
+		App.LOGGER.log(getLocalName() + ": done working.", true);
 	}
 
 	private Compartment getTypeCompartment(TrashType type) {
@@ -166,18 +166,18 @@ public class Truck extends Agent {
 	}
 	
 	public void moveTowardsPickup() {
-		System.out.println("{TRUCK} " + this.getLocalName() +"==> container: " + this.pos.toString() );
+		App.LOGGER.log(this.getLocalName() +" ==> " + this.pickupRequest.getContainerAID().getLocalName() + " : " + this.pos.toString() , true);
 		this.pos.sum( this.pos.getUnitaryStep( pickupRequest.getPos() ) );
 	}
 	
 	public void moveTowardsCentral() {
-		System.out.println("{TRUCK} " + this.getLocalName() +"==> central: " + this.pos.toString() );
+		App.LOGGER.log(this.getLocalName() +" ==> central : " + this.pos.toString() , true);
 		this.pos.sum( this.pos.getUnitaryStep( new Position(0,0) ) );
 	}
 	
 	public void startPickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
-		App.LOGGER.log("{TRUCK} " + this.getLocalName() + " started pickup", true);
+		App.LOGGER.log(this.getLocalName() + " started pickup", true);
 		this.setOccupied();
 	}
 	
@@ -186,7 +186,7 @@ public class Truck extends Agent {
 	}
 	
 	public void endPickup() {
-		App.LOGGER.log("{TRUCK} " + this.getLocalName() + " ended pickup", true);
+		App.LOGGER.log(this.getLocalName() + " ended pickup", true);
 		this.pickupRequest = null;
 		this.emptyCompartments();
 		this.setAvailable();

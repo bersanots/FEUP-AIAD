@@ -2,6 +2,7 @@ package behaviours;
 
 import agents.Container;
 import agents.Truck;
+import general.App;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
@@ -34,6 +35,7 @@ public class MoveTruckBehaviour extends TickerBehaviour {
 		}
 		else {
 			if(truck.reachedContainer()) {
+				App.LOGGER.log(truck.getLocalName() + " reached " + this.containerAID.getLocalName());
 				truck.requestTrashPickup(containerAID, amount);
 				truck.returnToCentral();
 			}

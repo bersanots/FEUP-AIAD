@@ -53,7 +53,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			this.trashType = (TrashType) oMsg[1];
 			this.amount = (Integer) oMsg[2];
 			this.pos = (Position) oMsg[3];
-			App.LOGGER.log("REQUEST CONTENT: " + req + " " + trashType.name() + " " + amount, true);
+			App.LOGGER.log("Request Content: " + req + " " + trashType.name() + " " + amount, true);
 			}
 			else 
 				ret = false;
@@ -76,20 +76,19 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
-		System.out.println(
-				"Agent " + this.getAgent().getLocalName() + ": Order Pickup for " + request.getSender().getLocalName());
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Order Pickup for " + request.getSender().getLocalName(), true);
 		
 		if (checkAction(request)) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
 			// don't want to send it.
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Agree to Order");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Agree to Order", true);
 			ACLMessage agree = request.createReply();
 			agree.setPerformative(ACLMessage.AGREE);
 			return agree;
 		} else {
 			// We refuse to perform the action
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuse to Order");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refuse to Order", true);
 			throw new RefuseException("check-failed");
 		}
 	}
@@ -97,7 +96,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
 		if (performAction(this.trashType, this.amount, request.getSender())) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Pickup Order Registered");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Pickup Order Registered", true);
 			ACLMessage inform = request.createReply();
 
 			Object[] oMsg = new Object[2];
@@ -113,7 +112,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Pickup Order Failed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Pickup Order Failed", true);
 			throw new FailureException("unexpected-error");
 		}
 	}

@@ -65,11 +65,11 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 	}
 
 	protected void handlePropose(ACLMessage propose, Vector v) {
-		System.out.println("Agent "+propose.getSender().getLocalName()+" proposed pickup");
+		App.LOGGER.log("Agent "+propose.getSender().getLocalName()+" proposed pickup", true);
 	}
 	
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent "+refuse.getSender().getLocalName()+" refused pickup");
+		App.LOGGER.log("Agent "+refuse.getSender().getLocalName()+" refused pickup", true);
 	}
 	
 	protected void handleFailure(ACLMessage failure) {
@@ -79,7 +79,7 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 			App.LOGGER.log("Responder does not exist", true);
 		}
 		else {
-			System.out.println("Agent "+failure.getSender().getLocalName()+" failed pickup");
+			App.LOGGER.log("Agent "+failure.getSender().getLocalName()+" failed pickup", true);
 		}
 		// Immediate failure --> we will not receive a response from this agent
 	}
@@ -112,7 +112,7 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 		}
 		// Accept the proposal of the best proposer
 		if (accept != null) {
-			System.out.println("Pickup has been handed to " + bestProposer.getLocalName());
+			App.LOGGER.log("Pickup has been handed to " + bestProposer.getLocalName(), true);
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 		}
 		else 
@@ -120,6 +120,6 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 	}
 	
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent "+inform.getSender().getLocalName()+" started the pickup");
+		App.LOGGER.log("Agent "+inform.getSender().getLocalName()+" started the pickup", true);
 	}
 }

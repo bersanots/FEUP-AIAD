@@ -64,6 +64,7 @@ public class Logger {
 	
 	synchronized public void log(String content)
 	{
+		content = content.substring(0, 1).toUpperCase() + content.substring(1); //capitalize first letter
 		content = this.getCurrentTimePrefix() + " " + content + System.lineSeparator();
 		
 		try {
