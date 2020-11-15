@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import agents.Compartment;
 import agents.Container;
+import general.App;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
@@ -49,7 +50,7 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 
 	@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent " + refuse.getSender().getLocalName() + " refused to order pickup");
+		App.LOGGER.log("Agent " + refuse.getSender().getLocalName() + " refused to order pickup", true);
 		this.container.stopAwaitingTruck();
 	}
 
@@ -57,21 +58,21 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
 			// does not exist
-			System.out.println("Responder does not exist");
+			App.LOGGER.log("Responder does not exist", true);
 		} else {
-			System.out.println("Agent " + failure.getSender().getLocalName() + " failed to order pickup");
+			App.LOGGER.log("Agent " + failure.getSender().getLocalName() + " failed to order pickup", true);
 		}
 		this.container.stopAwaitingTruck();
 	}
 
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		System.out.println("Agent " + agree.getSender().getLocalName() + " agreed to order pickup");
+		App.LOGGER.log("Agent " + agree.getSender().getLocalName() + " agreed to order pickup", true);
 	}
 
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent " + inform.getSender().getLocalName() + " successfully ordered pickup");
+		App.LOGGER.log("Agent " + inform.getSender().getLocalName() + " successfully ordered pickup", true);
 
 		// try {
 		Object[] oMsg;
@@ -79,13 +80,10 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 			oMsg = (Object[]) inform.getContentObject();
 			String req = (String) oMsg[0];
 			String status = (String) oMsg[1];
-			if (status.equals("OK")) {
-				System.out.println("PICKUP ORDERED");
-			}
-			else {
-				System.out.println("NO TRUCK COMING :'(");
+			if (!status.equals("OK")) {
+				App.LOGGER.log("NO TRUCK COMING :'(", true);
 				this.container.stopAwaitingTruck();
-				}
+			}
 		} catch (UnreadableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -7,6 +7,7 @@ import behaviours.GetIntermediatePickupContractBehaviour;
 import behaviours.GiveTrashBehaviour;
 
 import behaviours.RequestPickupBehaviour;
+import general.App;
 import general.DFUtils;
 import general.Position;
 import general.TrashType;
@@ -35,8 +36,8 @@ public class Container extends Agent {
 
 	public void setup() {
 		setAvailable();
-		System.out.println("A new Container was created!");
 		addBehaviour(new TrashGenerationBehaviour(this, rate));
+		App.LOGGER.log("A new Container was created!", true);
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -47,7 +48,7 @@ public class Container extends Agent {
 	}
 
 	public void takeDown() {
-		System.out.println(getLocalName() + ": done working.");
+		App.LOGGER.log(getLocalName() + ": done working.", true);
 	}
 
 	class TrashGenerationBehaviour extends TickerBehaviour {
@@ -73,17 +74,17 @@ public class Container extends Agent {
 	}
 
 	public void waitForTruck() {
-		System.out.println(this.getLocalName() + " awaiting truck");	
 		setOccupied();
+		App.LOGGER.log(this.getLocalName() + " awaiting truck", true);
 		this.isAwaitingTruck = true;
 		
 		
 	}
 
 	public void stopAwaitingTruck() {
-		System.out.println(this.getLocalName() + " single and ready to mingle");
 		setAvailable();
-		this.isAwaitingTruck = false;		
+		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
+		this.isAwaitingTruck = false;
 	}
 
 	public Position getPos() {

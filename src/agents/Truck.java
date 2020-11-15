@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import general.App;
 import general.DFUtils;
 import general.PickupRequest;
 import general.PickupRequestInfo;
@@ -83,7 +84,7 @@ public class Truck extends Agent {
 	
 
 	public void setup() {
-		System.out.println("A new Truck was created!");
+		App.LOGGER.log("A new Truck was created!", true);
 		// add behaviours
 
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
@@ -93,7 +94,7 @@ public class Truck extends Agent {
 	}
 
 	public void takeDown() {
-		System.out.println(getLocalName() + ": done working.");
+		App.LOGGER.log(getLocalName() + ": done working.", true);
 	}
 
 	private Compartment getTypeCompartment(TrashType type) {
@@ -146,11 +147,11 @@ public class Truck extends Agent {
 	}
 
 	public String showContents() {
-		String oi = "";
+		String content_str = "";
 		for (Compartment compartment : compartments) {
-			oi = oi + "Type: " + compartment.getType() + " | Amount: " + compartment.getCurrentAmount() + "\n";
+			content_str = content_str + "Type: " + compartment.getType() + " | Amount: " + compartment.getCurrentAmount() + " - ";
 		}
-		return oi;
+		return content_str.substring(0, content_str.length() - 3);
 	}
 	
 	public boolean isAvailable() {
@@ -174,18 +175,18 @@ public class Truck extends Agent {
 	}
 	
 	public void moveTowardsPickup() {
-		System.out.println(this.getLocalName() +": Moving toward container: " + this.pos.toString() );
+		App.LOGGER.log(this.getLocalName() +" ==> " + this.pickupRequest.getContainerAID().getLocalName() + " : " + this.pos.toString() , true);
 		this.pos.sum( this.pos.getUnitaryStep( pickupRequest.getPos() ) );
 	}
 	
 	public void moveTowardsCentral() {
-		System.out.println(this.getLocalName() +": Moving toward central: " + this.pos.toString() );
+		App.LOGGER.log(this.getLocalName() +" ==> central : " + this.pos.toString() , true);
 		this.pos.sum( this.pos.getUnitaryStep( new Position(0,0) ) );
 	}
 	
 	public void startPickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
-		System.out.println(this.getLocalName() + " started pickup");
+		App.LOGGER.log(this.getLocalName() + " started pickup", true);
 		this.setOccupied();
 	}
 	
@@ -199,7 +200,7 @@ public class Truck extends Agent {
 	}
 	
 	public void endPickup() {
-		System.out.println(this.getLocalName() + " ended pickup");
+		App.LOGGER.log(this.getLocalName() + " ended pickup", true);
 		this.pickupRequest = null;
 		this.emptyCompartments();
 		this.setAvailable();

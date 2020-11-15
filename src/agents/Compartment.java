@@ -88,8 +88,8 @@ public class Compartment {
 		Random random = new Random();
 		int max = 100, min = 0;
 		int result = random.nextInt(max - min) + min;
-		//System.out.println("TRASH PROB: " + prob);
-		//System.out.println("GOT THIS PROB: " + result);
+		//App.LOGGER.log("TRASH PROB: " + prob, true);
+		//App.LOGGER.log("GOT THIS PROB: " + result, true);
 		return result <= prob;
 	}
 	
@@ -132,10 +132,10 @@ public class Compartment {
 		if (isTrashGenerated(probability))
 		{
 			int randomTrashAmount = getRandomTrashAmount(min,max);
-			//System.out.println("ADDED THIS AMOUNTI: " + randomTrashAmount);
+			//App.LOGGER.log("ADDED THIS AMOUNTI: " + randomTrashAmount, true);
 			this.addContents(randomTrashAmount);
 		}
-		//System.out.println(this.getType() + ": Current amount: " + this.current_amount);
+		//App.LOGGER.log("Current amount: " + this.current_amount, true);
 	} 
 
 }

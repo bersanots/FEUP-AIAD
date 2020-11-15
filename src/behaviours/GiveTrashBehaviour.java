@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import agents.Compartment;
 import agents.Container;
+import general.App;
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -56,20 +57,19 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 	}
 
 	@Override
-	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from "
-				+ request.getSender().getLocalName() );
+	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {		
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from "+ request.getSender().getLocalName(), true);
 		if (checkAction(request)) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
 			// don't want to send it.
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Agrees to pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Agrees to pickup", true);
 			ACLMessage agree = request.createReply();
 			agree.setPerformative(ACLMessage.AGREE);
 			return agree;
 		} else {
 			// We refuse to perform the action
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuses Pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refuses Pickup", true);
 			throw new RefuseException("check-failed");
 		}
 	}
@@ -79,7 +79,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 		
 		int trashTaken = giveTrashToTruck();
 		if ( trashTaken >= 0) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Trash successfully removed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": successfully gave trash", true);
 			ACLMessage inform = request.createReply();
 			
 			Object[] oMsg=new Object[3];
@@ -96,7 +96,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Failed to remove trash");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Failed to remove trash", true);
 			throw new FailureException("unexpected-error");
 		}
 	}
