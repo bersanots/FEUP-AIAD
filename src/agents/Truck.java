@@ -247,6 +247,7 @@ public class Truck extends Agent {
 
 	public void endPickup() {
 		App.LOGGER.log(this.getLocalName(), "1 - RETURNED");
+		App.LOGGER.log(this.getLocalName(), "2 - DEPOSITED: " + this.showContents());
 		
 		long previous_time_sum = this.average_time * n_collections;
 		double previous_distance_sum = this.average_distance * n_collections;
@@ -254,15 +255,16 @@ public class Truck extends Agent {
 		
 		Date curr_time = new Date(System.currentTimeMillis());
 		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.SECONDS);
-		App.LOGGER.log(this.getLocalName(), "2 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
+		App.LOGGER.log(this.getLocalName(), "3 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
 		
 		double trip_distance = this.distance.getDistance(new Position(0,0));
-		App.LOGGER.log(this.getLocalName(), "3 - TRIP DISTANCE: " + trip_distance);
+		App.LOGGER.log(this.getLocalName(), "4 - TRIP DISTANCE: " + trip_distance);
 		
 		this.average_time = (previous_time_sum + round_trip_time) / this.n_collections;
 		this.average_distance = (previous_distance_sum + trip_distance) / this.n_collections;
-		App.LOGGER.log(this.getLocalName(), "4 - AVERAGE ROUND TRIP TIME: " + this.average_time + " SECONDS");
-		App.LOGGER.log(this.getLocalName(), "5 - AVERAGE TRIP DISTANCE: " + this.average_distance);
+		App.LOGGER.log(this.getLocalName(), "5 - AVERAGE ROUND TRIP TIME: " + this.average_time + " SECONDS");
+		App.LOGGER.log(this.getLocalName(), "6 - AVERAGE TRIP DISTANCE: " + this.average_distance);
+		
 		
 		App.LOGGER.log(this.getLocalName() + " ended pickup", true);
 		this.clearLoggingVars();
