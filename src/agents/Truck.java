@@ -38,6 +38,9 @@ public class Truck extends Agent {
 	// logging
 	private Date pickup_start_time = null;
 	private Position distance = null;
+	private long average_time = 0;
+	private double average_distance = 0;
+	private int n_collections = 0;
 
 	public Truck(String type, int total_capacity) {
 		this(type, total_capacity, true);
@@ -109,6 +112,16 @@ public class Truck extends Agent {
 	public void setup() {
 		App.LOGGER.log("A new Truck was created!", true);
 		App.LOGGER.createLogFile(this.getLocalName());
+		String compartment_types = "";
+		int individual_capacity = 0;
+		
+		for (Compartment c : this.compartments)
+		{
+			compartment_types += c.getType().name() + " ";
+			individual_capacity = c.getCapacity();
+		}
+		
+		App.LOGGER.log(this.getLocalName(), this.getLocalName() + " TYPES: " + compartment_types + " - COMPARTMENT CAPACITY: " + individual_capacity);
 		// add behaviours
 
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
@@ -234,11 +247,23 @@ public class Truck extends Agent {
 
 	public void endPickup() {
 		App.LOGGER.log(this.getLocalName(), "1 - RETURNED");
+		
+		long previous_time_sum = this.average_time * n_collections;
+		double previous_distance_sum = this.average_distance * n_collections;
+		this.n_collections++;
+		
 		Date curr_time = new Date(System.currentTimeMillis());
 		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.SECONDS);
-		double trip_distance = this.distance.getDistance(new Position(0,0));
 		App.LOGGER.log(this.getLocalName(), "2 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
+		
+		double trip_distance = this.distance.getDistance(new Position(0,0));
 		App.LOGGER.log(this.getLocalName(), "3 - TRIP DISTANCE: " + trip_distance);
+		
+		this.average_time = (previous_time_sum + round_trip_time) / this.n_collections;
+		this.average_distance = (previous_distance_sum + trip_distance) / this.n_collections;
+		App.LOGGER.log(this.getLocalName(), "4 - AVERAGE ROUND TRIP TIME: " + this.average_time + " SECONDS");
+		App.LOGGER.log(this.getLocalName(), "5 - AVERAGE TRIP DISTANCE: " + this.average_distance);
+		
 		App.LOGGER.log(this.getLocalName() + " ended pickup", true);
 		this.clearLoggingVars();
 		this.pickupRequest = null;
