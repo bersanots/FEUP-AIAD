@@ -2,18 +2,15 @@ package behaviours;
 
 import java.io.IOException;
 
-
-import agents.Compartment;
 import agents.Container;
 import general.App;
-import jade.core.Agent;
+import general.Compartment;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 public class GiveTrashBehaviour extends AchieveREResponder {

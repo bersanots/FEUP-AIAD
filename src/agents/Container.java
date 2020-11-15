@@ -1,21 +1,17 @@
 package agents;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import behaviours.GetIntermediatePickupContractBehaviour;
 import behaviours.GiveTrashBehaviour;
-
 import behaviours.RequestPickupBehaviour;
 import general.App;
+import general.Compartment;
 import general.DFUtils;
 import general.Position;
 import general.TrashType;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;

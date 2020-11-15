@@ -1,9 +1,7 @@
-package agents;
+package general;
 
 import java.util.Random;
 
-import general.TrashType;
-import jade.core.Agent;
 
 
 public class Compartment {

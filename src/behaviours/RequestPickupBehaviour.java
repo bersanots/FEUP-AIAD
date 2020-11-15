@@ -1,15 +1,11 @@
 package behaviours;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Vector;
 
-import agents.Compartment;
 import agents.Container;
 import general.App;
+import general.Compartment;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;

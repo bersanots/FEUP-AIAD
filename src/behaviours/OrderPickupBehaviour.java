@@ -1,26 +1,20 @@
 package behaviours;
 
 import general.App;
-import general.DFUtils;
 import general.PickupRequest;
 import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
-
 import java.io.IOException;
-import java.util.List;
 import agents.Central;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.Property;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.AchieveREInitiator;
 import jade.proto.AchieveREResponder;
 
 public class OrderPickupBehaviour extends AchieveREResponder {

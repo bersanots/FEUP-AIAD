@@ -1,21 +1,15 @@
 package behaviours;
 
-import agents.Container;
 import agents.Truck;
 import general.App;
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
-import jade.lang.acl.ACLMessage;
 
 public class MoveTruckBehaviour extends TickerBehaviour {
-	
-	private int amount;
-	
-	public MoveTruckBehaviour(Agent a, long period, int amount) {
+		
+	public MoveTruckBehaviour(Agent a, long period) {
 		super(a, period);
 		
-		this.amount = amount;
 	}
 	
 	private void stopTruck() {

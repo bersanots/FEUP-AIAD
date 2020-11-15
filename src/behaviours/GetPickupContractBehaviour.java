@@ -8,7 +8,6 @@ import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -65,7 +64,7 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	private boolean performAction() {
 		// Simulate action execution by generating a random number
 		this.truck.startPickup(containerPos, containerAID);
-		this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 1000, 15));
+		this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 1000));
 		return true;
 	}
 	

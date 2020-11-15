@@ -1,13 +1,9 @@
 package general;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-
 import agents.Central;
-import agents.Compartment;
 import agents.Container;
 import agents.Truck;
 import jade.core.*;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import general.App;
+import general.Compartment;
 import general.DFUtils;
 import general.PickupRequest;
 import general.PickupRequestInfo;

@@ -2,15 +2,9 @@ package behaviours;
 
 import java.io.IOException;
 
-import agents.Compartment;
 import agents.Container;
-import agents.Truck;
 import general.App;
-import general.PickupRequestInfo;
-import general.Position;
-import general.TrashType;
-import jade.core.AID;
-import jade.core.Agent;
+import general.Compartment;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;

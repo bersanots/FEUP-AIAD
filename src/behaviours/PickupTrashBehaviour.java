@@ -1,13 +1,8 @@
 package behaviours;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Vector;
-
 import agents.Truck;
 import general.App;
 import general.TrashType;
-import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jade.proto.AchieveREInitiator;
