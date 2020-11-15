@@ -26,8 +26,8 @@ public class App{
 		AgentController ac1, ac2, ac3, ac4, ac5;
 		try {
 			Central central = new Central();
-			Truck truck = new Truck("Simple", 100);
-			Truck truck2 = new Truck("Urgent", 100);
+			Truck truck = new Truck("Simple", 200);
+			Truck truck2 = new Truck("Urgent", 200);
 			Container c = new Container(TrashType.REGULAR, 50, new Position(-5,10));
 			Container c2 = new Container(TrashType.ORGANIC, 50, new Position(5,10));
 			ac1 = container.acceptNewAgent("central", central);
@@ -37,7 +37,7 @@ public class App{
 			ac5 = container.acceptNewAgent("container2", c2);
 			ac1.start();
 			ac3.start();
-			ac2.start();
+		    //ac2.start();
 			ac4.start();
 			ac5.start();
 		} catch (StaleProxyException e) {

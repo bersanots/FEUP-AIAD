@@ -5,6 +5,7 @@ import java.io.IOException;
 import agents.Compartment;
 import agents.Container;
 import agents.Truck;
+import general.App;
 import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
@@ -97,14 +98,14 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 		
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + compartment.getType().name() + " Intermediate Pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposing " + compartment.getType().name() + " Intermediate Pickup", true);
 			ACLMessage propose = cfp.createReply();
 			propose.setPerformative(ACLMessage.PROPOSE);
 			buildProposal(propose);
 			return propose;
 		} else {
 			// We refuse to provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refused Intermediate Pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refused Intermediate Pickup", true);
 			throw new RefuseException("evaluation-failed");
 		}
 	}
@@ -112,22 +113,22 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup proposal accepted");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup proposal accepted", true);
 		if (performAction()) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": starting Intermediate pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": starting Intermediate pickup", true);
 			ACLMessage inform = accept.createReply();
 			inform.setPerformative(ACLMessage.INFORM);
 			buildInformBodyMsg(inform);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": failed to start Intermediate pickup");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": failed to start Intermediate pickup", true);
 			container.stopAwaitingTruck();
 			throw new FailureException("unexpected-error");
 		}
 	}
 
 	protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup Proposal rejected");
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup Proposal rejected", true);
 		container.stopAwaitingTruck();
 	}
 }

@@ -1,7 +1,9 @@
 package agents;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import behaviours.GetIntermediatePickupContractBehaviour;
 import behaviours.GiveTrashBehaviour;
@@ -28,6 +30,8 @@ public class Container extends Agent {
 	private Position pos;
 	private boolean isAwaitingTruck = false;
 	private final int rate = 500;
+	// logging
+	private Date request_start_time = null;
 
 	public Container(TrashType type, int capacity, Position pos) {
 		this.compartment = new Compartment(type, capacity);
@@ -38,6 +42,7 @@ public class Container extends Agent {
 		setAvailable();
 		addBehaviour(new TrashGenerationBehaviour(this, rate));
 		App.LOGGER.log("A new Container was created!", true);
+		App.LOGGER.createLogFile(this.getLocalName());
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -75,16 +80,22 @@ public class Container extends Agent {
 
 	public void waitForTruck() {
 		setOccupied();
+		App.LOGGER.log(this.getLocalName(), "0 - WAITING");
 		App.LOGGER.log(this.getLocalName() + " awaiting truck", true);
 		this.isAwaitingTruck = true;
-		
+		this.setLoggingVars();
 		
 	}
 
 	public void stopAwaitingTruck() {
 		setAvailable();
+		App.LOGGER.log(this.getLocalName(), "1 - STOPPED WAITING");
+		Date curr_time = new Date(System.currentTimeMillis());
+		long time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
+		App.LOGGER.log(this.getLocalName(), "2 - TIME WAITED: " + time_waited + " SECONDS");
 		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
 		this.isAwaitingTruck = false;
+		this.clearLoggingVars();
 	}
 
 	public Position getPos() {
@@ -109,5 +120,15 @@ public class Container extends Agent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void setLoggingVars()
+	{
+		this.request_start_time = new Date(System.currentTimeMillis());
+	}
+	
+	private void clearLoggingVars()
+	{
+		this.request_start_time = null;
 	}
 }

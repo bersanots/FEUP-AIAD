@@ -3,7 +3,9 @@ package agents;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import general.App;
 import general.DFUtils;
@@ -32,6 +34,9 @@ public class Truck extends Agent {
 	private Position pos = new Position(0, 0);
 	private PickupRequest pickupRequest = null;
 	private boolean isScanning = false;
+	// logging
+	private Date pickup_start_time = null;
+	private Position distance = null;
 
 	public Truck(String type, int total_capacity) {
 
@@ -85,6 +90,7 @@ public class Truck extends Agent {
 
 	public void setup() {
 		App.LOGGER.log("A new Truck was created!", true);
+		App.LOGGER.createLogFile(this.getLocalName());
 		// add behaviours
 
 		// requestTrashPickup(new AID("container", AID.ISLOCALNAME), 10);
@@ -176,23 +182,29 @@ public class Truck extends Agent {
 	
 	public void moveTowardsPickup() {
 		App.LOGGER.log(this.getLocalName() +" ==> " + this.pickupRequest.getContainerAID().getLocalName() + " : " + this.pos.toString() , true);
-		this.pos.sum( this.pos.getUnitaryStep( pickupRequest.getPos() ) );
+		Position step = this.pos.getUnitaryStep( pickupRequest.getPos());
+		this.distance.sum(step.abs());
+		this.pos.sum(step);
 	}
 	
 	public void moveTowardsCentral() {
 		App.LOGGER.log(this.getLocalName() +" ==> central : " + this.pos.toString() , true);
-		this.pos.sum( this.pos.getUnitaryStep( new Position(0,0) ) );
+		Position step = this.pos.getUnitaryStep( new Position(0,0));
+		this.distance.sum(step.abs());
+		this.pos.sum(step);
 	}
 	
 	public void startPickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
+		this.setLoggingVars();
+		App.LOGGER.log(this.getLocalName(), "0 - LEFT");
 		App.LOGGER.log(this.getLocalName() + " started pickup", true);
 		this.setOccupied();
 	}
 	
 	public void startIntermediatePickup(Position pos, AID id) {
 		this.pickupRequest = new PickupRequest(pos, id);
-		System.out.println(this.getLocalName() + " started intermediate pickup");
+		App.LOGGER.log(this.getLocalName() + " started intermediate pickup", true);
 	}
 	
 	public void returnToCentral() {
@@ -200,10 +212,29 @@ public class Truck extends Agent {
 	}
 	
 	public void endPickup() {
+		App.LOGGER.log(this.getLocalName(), "1 - RETURNED");
+		Date curr_time = new Date(System.currentTimeMillis());
+		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.SECONDS);
+		double trip_distance = this.distance.getDistance(new Position(0,0));
+		App.LOGGER.log(this.getLocalName(), "2 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
+		App.LOGGER.log(this.getLocalName(), "3 - TRIP DISTANCE: " + trip_distance);
 		App.LOGGER.log(this.getLocalName() + " ended pickup", true);
+		this.clearLoggingVars();
 		this.pickupRequest = null;
 		this.emptyCompartments();
 		this.setAvailable();
+	}
+	
+	private void setLoggingVars()
+	{
+		this.pickup_start_time = new Date(System.currentTimeMillis());
+		this.distance = new Position(0,0);
+	}
+	
+	private void clearLoggingVars()
+	{
+		this.pickup_start_time = null;
+		this.distance = null;
 	}
 
 	public void setAvailable() {
@@ -236,11 +267,11 @@ public class Truck extends Agent {
 		List<AID> containerIds = new ArrayList<>();
 		for (Compartment compartment: compartments) {
 			TrashType t_type = compartment.getType();
-			List<AID> typeTruckIds = DFUtils.getService(this, "container" + t_type.name());
-			containerIds.addAll(typeTruckIds);			
+			List<AID> typeContainerIds = DFUtils.getService(this, "container" + t_type.name());
+			containerIds.addAll(typeContainerIds);			
 		}		
 		for (AID containerId : containerIds) {
-			System.out.println("OI " + containerId.getName());
+			App.LOGGER.log(containerId.getLocalName() + " is a candidate for intermediate pickup", true);
 		}
 		if (containerIds.size() != 0) {
 			this.addBehaviour(new SetIntermediatePickupContractBehaviour(this, containerIds));
