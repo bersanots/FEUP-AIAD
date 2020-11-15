@@ -33,6 +33,13 @@ public class Position implements Serializable{
 	  Position step = new Position(step_x, step_y);
 	  return step;
 	}
+	
+	public Position abs()
+	{
+		Position abs_pos = new Position(Math.abs(this.x), Math.abs(this.y));
+		
+		return abs_pos;
+	}
 
 	public Position getUnitaryStep(Position destination)
 	{

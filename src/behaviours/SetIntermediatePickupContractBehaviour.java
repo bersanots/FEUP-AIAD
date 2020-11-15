@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import agents.Truck;
+import general.App;
 import general.Position;
 import general.TrashType;
 import jade.core.AID;
@@ -60,20 +61,20 @@ public class SetIntermediatePickupContractBehaviour extends ContractNetInitiator
 	}
 
 	protected void handlePropose(ACLMessage propose, Vector v) {
-		System.out.println("Agent " + propose.getSender().getLocalName() + " proposed intermediate pickup");
+		App.LOGGER.log("Agent " + propose.getSender().getLocalName() + " proposed intermediate pickup", true);
 	}
 
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent " + refuse.getSender().getLocalName() + " refused intermediate pickup");
+		App.LOGGER.log("Agent " + refuse.getSender().getLocalName() + " refused intermediate pickup", true);
 	}
 
 	protected void handleFailure(ACLMessage failure) {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
 			// does not exist
-			System.out.println("Responder does not exist");
+			App.LOGGER.log("Responder does not exist", true);
 		} else {
-			System.out.println("Agent " + failure.getSender().getLocalName() + " failed intermediate pickup");
+			App.LOGGER.log("Agent " + failure.getSender().getLocalName() + " failed intermediate pickup", true);
 		}
 		// Immediate failure --> we will not receive a response from this agent
 	}
@@ -106,7 +107,7 @@ public class SetIntermediatePickupContractBehaviour extends ContractNetInitiator
 		}
 		// Accept the proposal of the best proposer
 		if (accept != null) {
-			System.out.println("Intermediate Pickup has been handed to " + bestProposer.getLocalName());
+			App.LOGGER.log("Intermediate Pickup has been handed to " + bestProposer.getLocalName(), true);
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 		}
 		else 
@@ -114,7 +115,7 @@ public class SetIntermediatePickupContractBehaviour extends ContractNetInitiator
 	}
 
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent " + inform.getSender().getLocalName() + " started the intermediate pickup");
+		App.LOGGER.log("Agent " + inform.getSender().getLocalName() + " started the intermediate pickup", true);
 
 		try {
 			Object[] oMsg = (Object[]) inform.getContentObject();
