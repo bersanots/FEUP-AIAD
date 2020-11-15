@@ -3,6 +3,7 @@ package behaviours;
 import java.io.IOException;
 
 import agents.Truck;
+import general.App;
 import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
@@ -91,14 +92,14 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 		
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name());
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name(), true);
 			ACLMessage propose = cfp.createReply();
 			propose.setPerformative(ACLMessage.PROPOSE);
 			buildProposal(propose);
 			return propose;
 		} else {
 			// We refuse to provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuse");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refuse", true);
 			throw new RefuseException("evaluation-failed");
 		}
 	}
@@ -106,19 +107,19 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposal accepted");
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposal accepted", true);
 		if (performAction()) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Action successfully performed", true);
 			ACLMessage inform = accept.createReply();
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action execution failed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Action execution failed", true);
 			throw new FailureException("unexpected-error");
 		}
 	}
 
 	protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposal rejected");
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposal rejected", true);
 	}
 }

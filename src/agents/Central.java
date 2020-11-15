@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import behaviours.OrderPickupBehaviour;
 import behaviours.SetPickupContractBehaviour;
+import general.App;
 import general.DFUtils;
 import general.PickupRequestInfo;
 import general.Position;
@@ -30,7 +31,7 @@ public class Central extends Agent {
 	}
 
 	public void setup() {
-		System.out.println("A new CENTRALI was created!");
+		App.LOGGER.log("{CENTRAL} A new Central was created!", true);
 		// add behaviours
 		addBehaviour(new OrderPickupBehaviour(this));
 
@@ -58,7 +59,7 @@ public class Central extends Agent {
 	
 	public void requestPendingPickups() {
 		int queueStartingSize = requestQueue.size();
-		System.out.println("Pending Requests: " + queueStartingSize);
+		App.LOGGER.log("{QUEUE} Pending Requests: " + queueStartingSize, true);
 		for (int i = 0; i < queueStartingSize; i++) {
 
 			PickupRequestInfo reqInfo = popRequest();
@@ -70,7 +71,7 @@ public class Central extends Agent {
 		TrashType t_type = reqInfo.getTrashType();
 		List<AID> truckIds = DFUtils.getService(this, "truck" + t_type.name());
 		for (AID truckId : truckIds) {
-			System.out.println("OI " + truckId.getName());
+			App.LOGGER.log("OI " + truckId.getName(), true);
 		}
 		if (truckIds.size() != 0) {
 			this.addBehaviour(new SetPickupContractBehaviour(this, reqInfo, truckIds));
@@ -98,7 +99,7 @@ public class Central extends Agent {
 
 	synchronized public void insertRequest(PickupRequestInfo req) {		
 		this.requestQueue.add(req);
-		System.out.println("+ Requests Pending: " + requestQueue.size());
+		App.LOGGER.log("{QUEUE} + Requests Pending: " + requestQueue.size(), true);
 	}
 
 	synchronized public PickupRequestInfo peekRequest() {

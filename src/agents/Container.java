@@ -3,6 +3,7 @@ package agents;
 import behaviours.GiveTrashBehaviour;
 
 import behaviours.RequestPickupBehaviour;
+import general.App;
 import general.Position;
 import general.TrashType;
 import jade.core.Agent;
@@ -27,7 +28,7 @@ public class Container extends Agent {
 
 	public void setup() {
 		addBehaviour(new TrashGenerationBehaviour(this, rate));
-		System.out.println("A new Container was created!");
+		App.LOGGER.log("{CONTAINER} A new Container was created!", true);
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -36,7 +37,7 @@ public class Container extends Agent {
 	}
 
 	public void takeDown() {
-		System.out.println(getLocalName() + ": done working.");
+		App.LOGGER.log("{CONTAINER} " + getLocalName() + ": done working.", true);
 	}
 
 	class TrashGenerationBehaviour extends TickerBehaviour {
@@ -62,12 +63,12 @@ public class Container extends Agent {
 	}
 	
 	public void waitForTruck() {
-		System.out.println(this.getLocalName() + " awaiting truck");
+		App.LOGGER.log("{CONTAINER} " + this.getLocalName() + " awaiting truck", true);
 		this.isAwaitingTruck = true;
 	}
 	
 	public void stopAwaitingTruck() {
-		System.out.println(this.getLocalName() + " single and ready to mingle");
+		App.LOGGER.log("{CONTAINER} " + this.getLocalName() + " single and ready to mingle", true);
 		this.isAwaitingTruck = false;
 	}
 

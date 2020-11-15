@@ -1,5 +1,6 @@
 package behaviours;
 
+import general.App;
 import general.DFUtils;
 import general.PickupRequest;
 import general.PickupRequestInfo;
@@ -52,7 +53,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			this.trashType = (TrashType) oMsg[1];
 			this.amount = (Integer) oMsg[2];
 			this.pos = (Position) oMsg[3];
-			System.out.println("REQUEST CONTENT: " + req + " " + trashType.name() + " " + amount);
+			App.LOGGER.log("REQUEST CONTENT: " + req + " " + trashType.name() + " " + amount, true);
 			}
 			else 
 				ret = false;
@@ -87,13 +88,13 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
 			// don't want to send it.
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Agree");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Agree", true);
 			ACLMessage agree = request.createReply();
 			agree.setPerformative(ACLMessage.AGREE);
 			return agree;
 		} else {
 			// We refuse to perform the action
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refuse");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Refuse", true);
 			throw new RefuseException("check-failed");
 		}
 	}
@@ -101,7 +102,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
 		if (performAction(this.trashType, this.amount, request.getSender())) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action successfully performed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Action successfully performed", true);
 			ACLMessage inform = request.createReply();
 
 			Object[] oMsg = new Object[2];
@@ -117,7 +118,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Action failed");
+			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Action failed", true);
 			throw new FailureException("unexpected-error");
 		}
 	}

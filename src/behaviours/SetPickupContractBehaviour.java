@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import agents.Central;
+import general.App;
 import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
@@ -64,21 +65,21 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 	}
 
 	protected void handlePropose(ACLMessage propose, Vector v) {
-		System.out.println("Agent "+propose.getSender().getName()+" proposed ");
+		App.LOGGER.log("Agent "+propose.getSender().getName()+" proposed ", true);
 	}
 	
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent "+refuse.getSender().getName()+" refused");
+		App.LOGGER.log("Agent "+refuse.getSender().getName()+" refused", true);
 	}
 	
 	protected void handleFailure(ACLMessage failure) {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
 			// does not exist
-			System.out.println("Responder does not exist");
+			App.LOGGER.log("Responder does not exist", true);
 		}
 		else {
-			System.out.println("Agent "+failure.getSender().getName()+" failed");
+			App.LOGGER.log("Agent "+failure.getSender().getName()+" failed", true);
 		}
 		// Immediate failure --> we will not receive a response from this agent
 	}
@@ -111,7 +112,7 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 		}
 		// Accept the proposal of the best proposer
 		if (accept != null) {
-			System.out.println("Accepting proposal "+bestProposal+" from responder "+bestProposer.getName());
+			App.LOGGER.log("Accepting proposal from responder " + bestProposer.getLocalName(), true);
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 		}
 		else 
@@ -119,6 +120,6 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 	}
 	
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+		App.LOGGER.log("Agent "+inform.getSender().getName()+" successfully performed the requested action", true);
 	}
 }

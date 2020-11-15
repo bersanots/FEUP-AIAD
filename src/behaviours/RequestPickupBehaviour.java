@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import agents.Compartment;
 import agents.Container;
+import general.App;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.FIPANames;
@@ -49,7 +50,7 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 
 	@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		System.out.println("Agent " + refuse.getSender().getName() + " refused to perform the requested action");
+		App.LOGGER.log("Agent " + refuse.getSender().getName() + " refused to perform the requested action", true);
 		this.container.stopAwaitingTruck();
 	}
 
@@ -57,21 +58,21 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
 			// does not exist
-			System.out.println("Responder does not exist");
+			App.LOGGER.log("Responder does not exist", true);
 		} else {
-			System.out.println("Agent " + failure.getSender().getName() + " failed to perform the requested action");
+			App.LOGGER.log("Agent " + failure.getSender().getName() + " failed to perform the requested action", true);
 		}
 		this.container.stopAwaitingTruck();
 	}
 
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		System.out.println("Agent " + agree.getSender().getName() + "agreed to perform the requested action");
+		App.LOGGER.log("Agent " + agree.getSender().getName() + "agreed to perform the requested action", true);
 	}
 
 	@Override
 	protected void handleInform(ACLMessage inform) {
-		System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
+		App.LOGGER.log("Agent " + inform.getSender().getName() + " successfully performed the requested action", true);
 
 		// try {
 		Object[] oMsg;
@@ -80,10 +81,10 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 			String req = (String) oMsg[0];
 			String status = (String) oMsg[1];
 			if (status.equals("OK")) {
-				System.out.println("PICKUP ORDERED YAY");
+				App.LOGGER.log("PICKUP ORDERED YAY", true);
 			}
 			else {
-				System.out.println("NO TRUCK COMING :'(");
+				App.LOGGER.log("NO TRUCK COMING :'(", true);
 				this.container.stopAwaitingTruck();
 				}
 		} catch (UnreadableException e) {

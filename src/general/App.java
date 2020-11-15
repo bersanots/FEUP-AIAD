@@ -9,6 +9,7 @@ import jade.core.Runtime;
 import jade.wrapper.*;
 
 public class App{
+	public static Logger LOGGER = new Logger();
 	
 	public static void main(String[] args) {
 		Runtime rt = Runtime.instance();
