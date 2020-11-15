@@ -32,10 +32,16 @@ public class Truck extends Agent {
 	private Position pos = new Position(0, 0);
 	private PickupRequest pickupRequest = null;
 	private boolean isScanning = false;
+	private boolean allowsIntermediatePickups;
 
 	public Truck(String type, int total_capacity) {
+		this(type, total_capacity, true);
+	}
+	
+	public Truck(String type, int total_capacity, boolean allowsIntermediatePickups) {
 
 		compartments = new ArrayList<>();
+		this.allowsIntermediatePickups = allowsIntermediatePickups;
 		switch (type) {
 
 		case "Recycling":
@@ -232,7 +238,10 @@ public class Truck extends Agent {
 	}
 
 	public void searchForContainers() {
-
+		
+		if (!this.allowsIntermediatePickups)
+			return;
+		
 		isScanning = true;
 
 		List<AID> containerIds = new ArrayList<>();
