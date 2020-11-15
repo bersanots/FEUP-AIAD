@@ -32,6 +32,8 @@ public class Container extends Agent {
 	private final int rate = 500;
 	// logging
 	private Date request_start_time = null;
+	private long average_time = 0;
+	private int n_collections = 0;
 
 	public Container(TrashType type, int capacity, Position pos) {
 		this.compartment = new Compartment(type, capacity);
@@ -43,6 +45,7 @@ public class Container extends Agent {
 		addBehaviour(new TrashGenerationBehaviour(this, rate));
 		App.LOGGER.log("A new Container was created!", true);
 		App.LOGGER.createLogFile(this.getLocalName());
+		App.LOGGER.log(this.getLocalName(), this.getLocalName() + " TYPE: " + this.compartment.getType().name() + " - CAPACITY: " + this.compartment.getCapacity());
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
@@ -90,9 +93,17 @@ public class Container extends Agent {
 	public void stopAwaitingTruck() {
 		setAvailable();
 		App.LOGGER.log(this.getLocalName(), "1 - STOPPED WAITING");
+		
+		long previous_time_sum = this.average_time * n_collections;
+		n_collections++;
+		
 		Date curr_time = new Date(System.currentTimeMillis());
 		long time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
 		App.LOGGER.log(this.getLocalName(), "2 - TIME WAITED: " + time_waited + " SECONDS");
+		
+		this.average_time = (previous_time_sum + time_waited) / n_collections;
+		App.LOGGER.log(this.getLocalName(), "3 - AVERAGE WAITING TIME: " + this.average_time + " SECONDS");
+		
 		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
 		this.isAwaitingTruck = false;
 		this.clearLoggingVars();
