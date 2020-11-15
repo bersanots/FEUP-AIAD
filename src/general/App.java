@@ -135,9 +135,9 @@ public class App {
 			regularTypes.add(TrashType.ORGANIC);
 			regularTypes.add(TrashType.REGULAR);
 			break;
-		case "SIMPLE":
+		case "ALLSIMPLE":
 		default:// regular (1 compartment)		
-			System.out.println("Simple");
+			System.out.println("AllSimple");
 			for (TrashType type : TrashType.values())
 				regularTypes.add(type);	
 			break;
@@ -178,16 +178,48 @@ public class App {
 	
 	private static void parseArgs(String args[]) {
 		
-		if (args.length != 5)
+		if (args.length != 6 && args.length != 2)
+		{
+			System.out.println("Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
+			System.out.println("truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
+			System.out.println("OR");
+			System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
 			System.exit(-1);
+		}
 		
-		String truckCombination = args[0];
-		int truckNum = Integer.parseInt(args[1]);
-		int truckCapacity = Integer.parseInt(args[2]);
-		int containerNum = Integer.parseInt(args[3]);
-		int containerCapacity = Integer.parseInt(args[4]);
+		if (args.length == 6)
+		{
+			String truckCombination = args[0];
+			int truckNum = Integer.parseInt(args[1]);
+			int truckCapacity = Integer.parseInt(args[2]);
+			int containerNum = Integer.parseInt(args[3]);
+			int containerCapacity = Integer.parseInt(args[4]);
+			int allowInterPickupsInt = Integer.parseInt(args[5]);
+			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
+			
 
-		App.buildContainers(containerNum, containerCapacity);			
-		App.buildTrucks(truckCombination, truckCapacity, truckNum, true);
+			App.buildContainers(containerNum, containerCapacity);			
+			App.buildTrucks(truckCombination, truckCapacity, truckNum, allowInterPickups);
+		}
+		else
+		{
+			String debug = args[0];
+			if (!debug.toUpperCase().equals("DEBUG"))
+			{
+				System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
+				System.exit(-1);
+			}
+			
+			int allowInterPickupsInt = Integer.parseInt(args[1]);
+			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
+			
+			addTruckType(TrashType.REGULAR, 100, allowInterPickups, 1);
+			addSpecialTruckType("Urgent", 100, allowInterPickups, 1);
+			addContainer(TrashType.REGULAR, 50, -5, 10);
+			addContainer(TrashType.ORGANIC, 50, 5, 10);
+				
+		}
+		
+		
 	}
 }
