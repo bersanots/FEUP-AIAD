@@ -27,7 +27,7 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 	
 		@Override
 	protected void handleRefuse(ACLMessage refuse) {
-		App.LOGGER.log("Agent "+refuse.getSender().getName()+" refused to perform the requested action", true);
+		System.out.println("Agent "+refuse.getSender().getLocalName()+" refused to give trash");
 	}
 	
 	protected void handleFailure(ACLMessage failure) {
@@ -37,13 +37,13 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 			App.LOGGER.log("Responder does not exist", true);
 		}
 		else {
-			App.LOGGER.log("Agent "+failure.getSender().getName()+" failed to perform the requested action", true);
+			System.out.println("Agent "+failure.getSender().getLocalName()+" failed to give trash");
 		}
 	}
 	
 	@Override
 	protected void handleAgree(ACLMessage agree) {
-		App.LOGGER.log("Agent "+agree.getSender().getName()+"agreed to perform the requested action", true);
+		System.out.println("Agent "+agree.getSender().getLocalName()+"agreed to give trash");
 	}
 	
 	@Override
@@ -57,8 +57,8 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 			//App.LOGGER.log("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount, true);
 			this.truck.pickupGarbage(trashType, amount);
 			this.truck.returnToCentral();
-			App.LOGGER.log("Agent "+inform.getSender().getName()+" successfully performed the requested action: " + req, true);
-			App.LOGGER.log(this.truck.showContents(), true);
+			System.out.println("Agent "+inform.getSender().getLocalName()+" successfully picked up trash: " + req);
+			System.out.println(this.truck.showContents());
 		} catch (UnreadableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
