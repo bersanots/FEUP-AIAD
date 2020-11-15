@@ -30,7 +30,7 @@ public class MoveTruckBehaviour extends TickerBehaviour {
 		else {
 			if(truck.reachedContainer()) {
 				truck.requestTrashFullPickup();
-				App.LOGGER.log(truck.getLocalName() + " reached destination?");
+				App.LOGGER.log(truck.getLocalName() + " reached destination");
 			}
 			else truck.moveTowardsPickup();
 		}
