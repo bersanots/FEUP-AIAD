@@ -58,7 +58,7 @@ public class Central extends Agent {
 	
 	public void requestPendingPickups() {
 		int queueStartingSize = requestQueue.size();
-		App.LOGGER.log("Pending Requests: " + queueStartingSize + " (A truck has joined/left the central)", true);
+		// App.LOGGER.log("Pending Requests: " + queueStartingSize, true);
 		for (int i = 0; i < queueStartingSize; i++) {
 
 			PickupRequestInfo reqInfo = popRequest();
