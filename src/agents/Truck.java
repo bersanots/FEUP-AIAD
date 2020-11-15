@@ -75,6 +75,10 @@ public class Truck extends Agent {
 			compartments.add(new Compartment(TrashType.REGULAR, total_capacity / 2));
 			compartments.add(new Compartment(TrashType.ORGANIC, total_capacity / 2));
 			break;
+		case "EletroGreen":
+			compartments.add(new Compartment(TrashType.GREEN, total_capacity / 2));
+			compartments.add(new Compartment(TrashType.ELETRONIC, total_capacity / 2));
+			break;
 		default:// regular (1 compartment)
 			compartments.add(new Compartment(TrashType.REGULAR, total_capacity));
 			break;
