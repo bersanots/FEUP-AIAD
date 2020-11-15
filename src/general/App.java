@@ -3,10 +3,11 @@ package general;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import agents.Central;
-
+import agents.Compartment;
 import agents.Container;
 import agents.Truck;
 import jade.core.*;
@@ -35,11 +36,9 @@ public class App {
 
 		try {
 			central = new Central();
-			addTruckType(TrashType.REGULAR, 100, true);
-			addSpecialTruckType("Urgent", 100, true);
-			addContainer(TrashType.REGULAR, 50, -5, 10);
-			addContainer(TrashType.ORGANIC, 50, 5, 10);
-			
+			App.buildContainers(1, 50);			
+			App.buildTrucks("allcomp", 100, 2, true);
+
 			List<AgentController> acs = buildAgentControllerList(container);
 
 			startAgents(acs);
@@ -85,12 +84,16 @@ public class App {
 
 	}
 
-	private static void addTruckType(TrashType type, int capacity, boolean allowsIntermediate) {
-		addTruck(new Truck(type, capacity, allowsIntermediate));
+	private static void addTruckType(TrashType type, int capacity, boolean allowsIntermediate, int num) {
+		for (int i = 0; i < num; i++) {
+			addTruck(new Truck(type, capacity, allowsIntermediate));
+		}
 	}
 
-	private static void addSpecialTruckType(String type, int capacity, boolean allowsIntermediate) {
-		addTruck(new Truck(type, capacity, allowsIntermediate));
+	private static void addSpecialTruckType(String type, int capacity, boolean allowsIntermediate, int num) {
+		for (int i = 0; i < num; i++) {
+			addTruck(new Truck(type, capacity, allowsIntermediate));
+		}
 	}
 
 	private static void addTruck(Truck t) {
@@ -100,5 +103,84 @@ public class App {
 	private static void addContainer(TrashType t_type, int capacity, int x, int y) {
 		Container c = new Container(t_type, capacity, new Position(x, y));
 		containers.add(c);
+	}
+	
+	private static void buildTrucks(String truckCombination, int capacity, int num, boolean allowsIntermediate) {
+		
+		List <String> specialTypes = new ArrayList<>();
+		List <TrashType> regularTypes = new ArrayList<>();
+		switch (truckCombination.toUpperCase()) {
+		case "ALLCOMP":
+			System.out.println("AllComp");
+			specialTypes.add("Recycling");
+			specialTypes.add("Urgent");
+			specialTypes.add("EletroGreen");
+			break;
+		case "RECYCLING":
+			System.out.println("Recycling");
+			specialTypes.add("Recycling");			
+			regularTypes.add(TrashType.ELETRONIC);
+			regularTypes.add(TrashType.ORGANIC);
+			regularTypes.add(TrashType.REGULAR);
+			break;
+		case "URGENT":
+			System.out.println("Urgent");
+			specialTypes.add("Urgent");
+			regularTypes.add(TrashType.BLUE);
+			regularTypes.add(TrashType.GREEN);
+			regularTypes.add(TrashType.YELLOW);
+			regularTypes.add(TrashType.ELETRONIC);
+			break;
+		case "ELETROGREEN":
+			System.out.println("EletroGreen");
+			specialTypes.add("EletroGreen");
+			regularTypes.add(TrashType.BLUE);
+			regularTypes.add(TrashType.YELLOW);
+			regularTypes.add(TrashType.ORGANIC);
+			regularTypes.add(TrashType.REGULAR);
+			break;
+		case "SIMPLE":
+		default:// regular (1 compartment)		
+			System.out.println("Simple");
+			for (TrashType type : TrashType.values())
+				regularTypes.add(type);	
+			break;
+		}
+		
+		for (String specialT : specialTypes)
+			addSpecialTruckType(specialT, capacity, allowsIntermediate, num);
+		for (TrashType regularT : regularTypes)
+			addTruckType(regularT, capacity, allowsIntermediate, num);
+	}
+	
+	private static void buildContainers(int num, int capacity) {
+		
+		for(TrashType t_type : TrashType.values())	
+			buildTypeContainers(num, capacity, t_type);
+		
+	}
+
+	private static void buildTypeContainers(int num, int capacity, TrashType t_type) {
+		
+		int max = 30;
+		int min = -30;
+		Random random = new Random();
+		
+		for (int i = 0; i < num; i++) {
+			
+			int x = random.nextInt(max - min) + min;
+			int y = random.nextInt(max - min) + min;
+			
+			if (x == 0)
+				x = 1;
+			if (y == 0)
+				y = 1;
+			
+			App.addContainer(t_type, capacity, x, y);
+		}
+	}
+	
+	private static void parseArgs(String args[]) {
+		
 	}
 }
