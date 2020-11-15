@@ -38,6 +38,20 @@ public class Truck extends Agent {
 		this(type, total_capacity, true);
 	}
 	
+	public Truck(TrashType type, int total_capacity, boolean allowsIntermediatePickups) {
+
+		compartments = new ArrayList<>();
+		this.allowsIntermediatePickups = allowsIntermediatePickups;
+		compartments.add(new Compartment(type, total_capacity));
+			
+	}
+	
+	public Truck(TrashType type, int total_capacity) {
+
+		this(type, total_capacity, true);
+			
+	}
+	
 	public Truck(String type, int total_capacity, boolean allowsIntermediatePickups) {
 
 		compartments = new ArrayList<>();
@@ -53,7 +67,7 @@ public class Truck extends Agent {
 			compartments.add(new Compartment(TrashType.REGULAR, total_capacity / 2));
 			compartments.add(new Compartment(TrashType.ORGANIC, total_capacity / 2));
 			break;
-		case "Simple":// simple (1 compartment)
+		default:// regular (1 compartment)
 			compartments.add(new Compartment(TrashType.REGULAR, total_capacity));
 			break;
 		}

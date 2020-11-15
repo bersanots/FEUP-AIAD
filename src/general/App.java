@@ -26,7 +26,7 @@ public class App{
 		AgentController ac1, ac2, ac3, ac4, ac5;
 		try {
 			Central central = new Central();
-			Truck truck = new Truck("Simple", 100);
+			Truck truck = new Truck(TrashType.REGULAR, 100);
 			Truck truck2 = new Truck("Urgent", 100);
 			Container c = new Container(TrashType.REGULAR, 50, new Position(-5,10));
 			Container c2 = new Container(TrashType.ORGANIC, 50, new Position(5,10));
