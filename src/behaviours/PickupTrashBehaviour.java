@@ -56,6 +56,7 @@ public class PickupTrashBehaviour extends AchieveREInitiator {
 			//System.out.println("REPLY CONTENT: " + req + " " + trashType.name() + " " + amount);
 			this.truck.pickupGarbage(trashType, amount);
 			this.truck.returnToCentral();
+			truck.searchForContainers();
 			System.out.println("Agent "+inform.getSender().getLocalName()+" successfully picked up trash: " + req);
 			System.out.println(this.truck.showContents());
 		} catch (UnreadableException e) {

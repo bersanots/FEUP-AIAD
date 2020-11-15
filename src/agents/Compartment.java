@@ -114,7 +114,7 @@ public class Compartment {
 			prob = 100;
 			break;
 		case REGULAR:
-			prob = 36;
+			prob = 10;
 			break;
 		case YELLOW:
 			prob = 12;

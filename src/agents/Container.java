@@ -1,15 +1,23 @@
 package agents;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import behaviours.GetIntermediatePickupContractBehaviour;
 import behaviours.GiveTrashBehaviour;
 
 import behaviours.RequestPickupBehaviour;
+import general.DFUtils;
 import general.Position;
 import general.TrashType;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
 import jade.domain.FIPANames;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
@@ -26,13 +34,16 @@ public class Container extends Agent {
 	}
 
 	public void setup() {
-		addBehaviour(new TrashGenerationBehaviour(this, rate));
+		setAvailable();
 		System.out.println("A new Container was created!");
+		addBehaviour(new TrashGenerationBehaviour(this, rate));
 		// add behaviours
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
 		addBehaviour(new GiveTrashBehaviour(this, template));
+		addBehaviour(new GetIntermediatePickupContractBehaviour(this));
+		
 	}
 
 	public void takeDown() {
@@ -48,7 +59,7 @@ public class Container extends Agent {
 
 		protected void onTick() {
 			Container container = (Container) this.getAgent();
-			if (!compartment.isFull()) {				
+			if (!compartment.isFull()) {
 				compartment.generateTrash();
 			}
 			if (compartment.isFull() && !isAwaitingTruck) {
@@ -60,15 +71,19 @@ public class Container extends Agent {
 	public Compartment getCompartment() {
 		return this.compartment;
 	}
-	
+
 	public void waitForTruck() {
-		System.out.println(this.getLocalName() + " awaiting truck");
+		System.out.println(this.getLocalName() + " awaiting truck");	
+		setOccupied();
 		this.isAwaitingTruck = true;
+		
+		
 	}
-	
+
 	public void stopAwaitingTruck() {
 		System.out.println(this.getLocalName() + " single and ready to mingle");
-		this.isAwaitingTruck = false;
+		setAvailable();
+		this.isAwaitingTruck = false;		
 	}
 
 	public Position getPos() {
@@ -77,5 +92,21 @@ public class Container extends Agent {
 
 	public void setPos(Position pos) {
 		this.pos = pos;
+	}
+
+	public void setAvailable() {
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("container" + compartment.getType().name());
+		sd.setName(getLocalName());
+		DFUtils.register(this, sd);
+	}
+
+	public void setOccupied() {
+		try {
+			DFService.deregister(this);
+		} catch (FIPAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

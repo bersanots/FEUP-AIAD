@@ -28,7 +28,7 @@ public class App{
 			Truck truck = new Truck("Simple", 100);
 			Truck truck2 = new Truck("Urgent", 100);
 			Container c = new Container(TrashType.REGULAR, 50, new Position(-5,10));
-			Container c2 = new Container(TrashType.ORGANIC, 15, new Position(5,10));
+			Container c2 = new Container(TrashType.ORGANIC, 50, new Position(5,10));
 			ac1 = container.acceptNewAgent("central", central);
 			ac2 = container.acceptNewAgent("truck1", truck);
 			ac3 = container.acceptNewAgent("container1", c);
@@ -36,7 +36,7 @@ public class App{
 			ac5 = container.acceptNewAgent("container2", c2);
 			ac1.start();
 			ac3.start();
-			ac2.start();
+			//ac2.start();
 			ac4.start();
 			ac5.start();
 		} catch (StaleProxyException e) {

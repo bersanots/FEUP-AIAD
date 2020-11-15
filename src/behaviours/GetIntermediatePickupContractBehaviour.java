@@ -2,6 +2,8 @@ package behaviours;
 
 import java.io.IOException;
 
+import agents.Compartment;
+import agents.Container;
 import agents.Truck;
 import general.PickupRequestInfo;
 import general.Position;
@@ -17,16 +19,15 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
 
-public class GetPickupContractBehaviour extends ContractNetResponder {
+public class GetIntermediatePickupContractBehaviour extends ContractNetResponder {
 	
-	private Truck truck;
-	private TrashType t_type = TrashType.REGULAR;
-	private AID containerAID;
-	private Position containerPos;
+	private Container container;
+	private Compartment compartment;
 
-	public GetPickupContractBehaviour(Truck a) {
-		super(a, buildTemplate());
-		this.truck = a;
+	public GetIntermediatePickupContractBehaviour(Container container) {
+		super(container, buildTemplate());
+		this.container = container;
+		this.compartment = container.getCompartment();
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -37,23 +38,29 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 		return template;
 	}
 	
+	private void buildInformBodyMsg(ACLMessage msg) {		
+		Object[] oMsg = new Object[2];
+		oMsg[0] = "NEWCT";
+		oMsg[1] = this.container.getPos();
+		try {
+			msg.setContentObject(oMsg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private boolean evaluateAction(ACLMessage cfp) {
 		Object[] oMsg;
 		try {
 			oMsg = (Object[]) cfp.getContentObject();
 			
 			String msgProt = (String) oMsg[0];
-			PickupRequestInfo reqInfo = (PickupRequestInfo) oMsg[1];
 			
-			this.containerAID = reqInfo.getPickupRequest().getContainerAID();
-			this.containerPos = reqInfo.getPickupRequest().getPos();
-			this.t_type = reqInfo.getTrashType();
-			int amount = reqInfo.getAmount();
-			
-			if (!msgProt.equals("CPROP"))
+			if (!msgProt.equals("TPROP"))
 				return false;
 			
-			return (truck.hasType(t_type) && truck.hasTypeCapacity(t_type, amount) && truck.isAvailable());
+			return this.compartment.getCurrentAmount() > 0;
 			
 		} catch (UnreadableException e) {
 			return false;
@@ -62,19 +69,18 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	}
 
 	private boolean performAction() {
-		// Simulate action execution by generating a random number
-		this.truck.startPickup(containerPos, containerAID);
-		this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 1000, 15));
 		return true;
 	}
 	
 	private void buildProposal(ACLMessage msg) {
-		int capacity = truck.getTypeCapacity(t_type);
+		
+		container.waitForTruck();
+		int currentAmount = compartment.getCurrentAmount();
 		
 		Object[] oMsg = new Object[3];
-		oMsg[0] = "TCOUNTERPROP";
-		oMsg[1] = t_type;
-		oMsg[2] = capacity;
+		oMsg[0] = "CTCOUNTERPROP";
+		oMsg[1] = compartment.getType();
+		oMsg[2] = currentAmount;
 		try {
 			msg.setContentObject(oMsg);
 		} catch (IOException e) {
@@ -91,14 +97,14 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 		
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + t_type.name() + " Pickup");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Proposing " + compartment.getType().name() + " Intermediate Pickup");
 			ACLMessage propose = cfp.createReply();
 			propose.setPerformative(ACLMessage.PROPOSE);
 			buildProposal(propose);
 			return propose;
 		} else {
 			// We refuse to provide a proposal
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refused Pickup");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Refused Intermediate Pickup");
 			throw new RefuseException("evaluation-failed");
 		}
 	}
@@ -106,19 +112,22 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup proposal accepted");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup proposal accepted");
 		if (performAction()) {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": starting pickup");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": starting Intermediate pickup");
 			ACLMessage inform = accept.createReply();
 			inform.setPerformative(ACLMessage.INFORM);
+			buildInformBodyMsg(inform);
 			return inform;
 		} else {
-			System.out.println("Agent " + this.getAgent().getLocalName() + ": failed to start pickup");
+			System.out.println("Agent " + this.getAgent().getLocalName() + ": failed to start Intermediate pickup");
+			container.stopAwaitingTruck();
 			throw new FailureException("unexpected-error");
 		}
 	}
 
 	protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-		System.out.println("Agent " + this.getAgent().getLocalName() + ": pickup Proposal rejected");
+		System.out.println("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup Proposal rejected");
+		container.stopAwaitingTruck();
 	}
 }

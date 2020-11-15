@@ -8,13 +8,12 @@ import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
 public class MoveTruckBehaviour extends TickerBehaviour {
-
-	private AID containerAID;
+	
 	private int amount;
 	
-	public MoveTruckBehaviour(Agent a, long period, AID containerAID, int amount) {
+	public MoveTruckBehaviour(Agent a, long period, int amount) {
 		super(a, period);
-		this.containerAID = containerAID;
+		
 		this.amount = amount;
 	}
 	
@@ -30,12 +29,12 @@ public class MoveTruckBehaviour extends TickerBehaviour {
 			stopTruck();
 		}
 		else if (truck.isReturning()) {
-			truck.moveTowardsCentral();
+			if (!truck.isScanning())
+				truck.moveTowardsCentral();
 		}
 		else {
 			if(truck.reachedContainer()) {
-				truck.requestTrashFullPickup(containerAID);
-				truck.returnToCentral();
+				truck.requestTrashFullPickup();
 			}
 			else truck.moveTowardsPickup();
 		}

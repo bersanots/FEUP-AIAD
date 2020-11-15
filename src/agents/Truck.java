@@ -7,11 +7,14 @@ import java.util.List;
 
 import general.DFUtils;
 import general.PickupRequest;
+import general.PickupRequestInfo;
 import general.Position;
 import general.TrashType;
 import behaviours.GetPickupContractBehaviour;
 import behaviours.MoveTruckBehaviour;
 import behaviours.PickupTrashBehaviour;
+import behaviours.SetIntermediatePickupContractBehaviour;
+import behaviours.SetPickupContractBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -27,6 +30,7 @@ public class Truck extends Agent {
 	private List<Compartment> compartments;
 	private Position pos = new Position(0, 0);
 	private PickupRequest pickupRequest = null;
+	private boolean isScanning = false;
 
 	public Truck(String type, int total_capacity) {
 
@@ -65,14 +69,15 @@ public class Truck extends Agent {
 		return msg;
 	}
 
-	public void requestTrashPickup(AID containerAID, int amount) {
+	public void requestTrashPickup(int amount) {
 
+		AID containerAID = this.pickupRequest.getContainerAID();
 		ACLMessage msg = this.buildPickupGarbageMsg(containerAID, amount);
 		addBehaviour(new PickupTrashBehaviour(this, msg));
 	}
 	
-	public void requestTrashFullPickup(AID containerAID) {
-		requestTrashPickup(containerAID, -1);
+	public void requestTrashFullPickup() {
+		requestTrashPickup(-1);
 	}
 	
 	
@@ -184,6 +189,11 @@ public class Truck extends Agent {
 		this.setOccupied();
 	}
 	
+	public void startIntermediatePickup(Position pos, AID id) {
+		this.pickupRequest = new PickupRequest(pos, id);
+		System.out.println(this.getLocalName() + " started intermediate pickup");
+	}
+	
 	public void returnToCentral() {
 		this.pickupRequest = null;
 	}
@@ -216,5 +226,34 @@ public class Truck extends Agent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void searchForContainers() {
+		
+		isScanning = true;
+		
+		List<AID> containerIds = new ArrayList<>();
+		for (Compartment compartment: compartments) {
+			TrashType t_type = compartment.getType();
+			List<AID> typeTruckIds = DFUtils.getService(this, "container" + t_type.name());
+			containerIds.addAll(typeTruckIds);			
+		}		
+		for (AID containerId : containerIds) {
+			System.out.println("OI " + containerId.getName());
+		}
+		if (containerIds.size() != 0) {
+			this.addBehaviour(new SetIntermediatePickupContractBehaviour(this, containerIds));
+		} else {
+			isScanning = false;
+		}
+		
+	}
+
+	public boolean isScanning() {
+		return isScanning;
+	}
+
+	public void setScanning(boolean isScanning) {
+		this.isScanning = isScanning;
 	}
 }
