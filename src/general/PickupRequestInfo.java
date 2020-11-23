@@ -2,12 +2,12 @@ package general;
 
 import jade.util.leap.Serializable;
 
-public class PickupRequestInfo implements Serializable{
-	
+public class PickupRequestInfo implements Serializable {
+
 	private PickupRequest pickupRequest;
 	private int amount;
 	private TrashType trashType;
-	
+
 	public PickupRequestInfo(PickupRequest pickupRequest, int amount, TrashType trashType) {
 		this.pickupRequest = pickupRequest;
 		this.amount = amount;
@@ -25,12 +25,11 @@ public class PickupRequestInfo implements Serializable{
 	public TrashType getTrashType() {
 		return trashType;
 	}
-	
+
 	@Override
-    public String toString() {
-        return "Position [pickupRequest=" + pickupRequest.toString() + ", amount=" + amount + ",trashType=" + trashType
-                + "]";
-    }
-	
-	
+	public String toString() {
+		return "Position [pickupRequest=" + pickupRequest.toString() + ", amount=" + amount + ",trashType=" + trashType
+				+ "]";
+	}
+
 }

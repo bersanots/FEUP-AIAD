@@ -2,8 +2,6 @@ package general;
 
 import java.util.Random;
 
-
-
 public class Compartment {
 
 	private final int capacity;
@@ -11,15 +9,14 @@ public class Compartment {
 	private TrashType type;
 
 	public Compartment(TrashType type, int capacity) {
-
 		this.capacity = capacity;
 		this.type = type;
 	}
-	
+
 	public boolean isEmpty() {
 		return this.capacity == 0;
 	}
-	
+
 	public boolean isFull() {
 		return this.current_amount == this.capacity;
 	}
@@ -39,7 +36,7 @@ public class Compartment {
 	public TrashType getType() {
 		return type;
 	}
-	
+
 	public int getCurrentAmount() {
 		return this.current_amount;
 	}
@@ -81,59 +78,58 @@ public class Compartment {
 
 		return amount;
 	}
-	
+
 	private boolean isTrashGenerated(int prob) {
 		Random random = new Random();
 		int max = 100, min = 0;
 		int result = random.nextInt(max - min) + min;
-		//App.LOGGER.log("TRASH PROB: " + prob, true);
-		//App.LOGGER.log("GOT THIS PROB: " + result, true);
+		// App.LOGGER.log("TRASH PROB: " + prob, true);
+		// App.LOGGER.log("GOT THIS PROB: " + result, true);
 		return result <= prob;
 	}
-	
+
 	private int getRandomTrashAmount(int min, int max) {
 		Random random = new Random();
-	    return random.nextInt(max - min) + min;
+		return random.nextInt(max - min) + min;
 	}
-	
+
 	private int getTypeProbability() {
 		int prob = 0;
 		switch (type) {
-		case BLUE:
-			prob = 9;
-			break;
-		case ELETRONIC:
-			prob = 1;
-			break;
-		case GREEN:
-			prob = 7;
-			break;
-		case ORGANIC:
-			prob = 2;
-			break;
-		case REGULAR:
-			prob = 36;
-			break;
-		case YELLOW:
-			prob = 12;
-			break;
+			case BLUE:
+				prob = 9;
+				break;
+			case ELETRONIC:
+				prob = 1;
+				break;
+			case GREEN:
+				prob = 7;
+				break;
+			case ORGANIC:
+				prob = 2;
+				break;
+			case REGULAR:
+				prob = 36;
+				break;
+			case YELLOW:
+				prob = 12;
+				break;
 		}
 		return prob;
 	}
 
 	public void generateTrash() {
-		
+
 		int max = 10, min = 1;
 		int probability = getTypeProbability();
 		Random random = new Random();
-		
-		if (isTrashGenerated(probability))
-		{
-			int randomTrashAmount = getRandomTrashAmount(min,max);
-			//App.LOGGER.log("ADDED THIS AMOUNTI: " + randomTrashAmount, true);
+
+		if (isTrashGenerated(probability)) {
+			int randomTrashAmount = getRandomTrashAmount(min, max);
+			// App.LOGGER.log("ADDED THIS AMOUNTI: " + randomTrashAmount, true);
 			this.addContents(randomTrashAmount);
 		}
-		//App.LOGGER.log("Current amount: " + this.current_amount, true);
-	} 
+		// App.LOGGER.log("Current amount: " + this.current_amount, true);
+	}
 
 }

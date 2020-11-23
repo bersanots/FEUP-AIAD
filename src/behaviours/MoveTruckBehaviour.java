@@ -2,23 +2,22 @@ package behaviours;
 
 import agents.Truck;
 import general.App;
-import jade.core.Agent;
-import jade.core.behaviours.TickerBehaviour;
+import sajas.core.Agent;
+import sajas.core.behaviours.TickerBehaviour;
 
 public class MoveTruckBehaviour extends TickerBehaviour {
-		
+
 	public MoveTruckBehaviour(Agent a, long period) {
 		super(a, period);
-		
 	}
-	
+
 	private void stopTruck() {
 		this.getAgent().removeBehaviour(this);
 	}
-	
+
 	protected void onTick() {
 		Truck truck = (Truck) this.getAgent();
-		
+
 		if (truck.isAvailable()) {
 			truck.endPickup();
 			stopTruck();
@@ -28,7 +27,7 @@ public class MoveTruckBehaviour extends TickerBehaviour {
 				truck.moveTowardsCentral();
 		}
 		else {
-			if(truck.reachedContainer()) {
+			if (truck.reachedContainer()) {
 				truck.requestTrashFullPickup();
 				App.LOGGER.log(truck.getLocalName() + " reached destination");
 			}

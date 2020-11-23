@@ -9,11 +9,11 @@ import agents.Truck;
 import general.App;
 import general.Position;
 import general.TrashType;
-import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import jade.proto.ContractNetInitiator;
+import jade.core.AID;
+import sajas.proto.ContractNetInitiator;
 
 public class SetIntermediatePickupContractBehaviour extends ContractNetInitiator {
 
@@ -110,8 +110,7 @@ public class SetIntermediatePickupContractBehaviour extends ContractNetInitiator
 			App.LOGGER.log("Intermediate Pickup has been handed to " + bestProposer.getLocalName(), true);
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 		}
-		else 
-			truck.setScanning(false);
+		else truck.setScanning(false);
 	}
 
 	protected void handleInform(ACLMessage inform) {

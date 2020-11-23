@@ -3,14 +3,23 @@ package general;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import agents.Central;
 import agents.Container;
 import agents.Truck;
-import jade.core.*;
-import jade.core.Runtime;
-import jade.wrapper.*;
 
-public class App {
+import jade.core.Profile;
+import jade.core.ProfileImpl;
+import jade.wrapper.StaleProxyException;
+
+import sajas.core.Runtime;
+import sajas.sim.repast3.Repast3Launcher;
+import sajas.wrapper.ContainerController;
+import sajas.wrapper.AgentController;
+
+import uchicago.src.sim.engine.SimInit;
+
+public class App extends Repast3Launcher {
 
 	public static Logger LOGGER = new Logger();
 
@@ -18,32 +27,40 @@ public class App {
 	private static List<Container> containers = new ArrayList<>();
 	private static Central central = new Central();
 
-	public static void main(String[] args) {
+	private static String args[];
+
+	@Override
+	public String[] getInitParam() {
+		return new String[0];
+	}
+
+	@Override
+	public String getName() {
+		return "SAJaS Project";
+	}
+
+	@Override
+	protected void launchJADE() {
+
 		Runtime rt = Runtime.instance();
 
 		Profile p1 = new ProfileImpl();
-		// p1.setParameter(...); // optional
 		ContainerController mainContainer = rt.createMainContainer(p1);
 
 		Profile p2 = new ProfileImpl();
-		// p2.setParameter(...); // optional
-
 		ContainerController container = rt.createAgentContainer(p2);
 
 		try {
 			central = new Central();
-			parseArgs(args);
+			parseArgs();
 
 			List<AgentController> acs = buildAgentControllerList(container);
-			
 
 			startAgents(acs);
 
 		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	private static void startAgents(List<AgentController> acs) throws StaleProxyException {
@@ -100,95 +117,91 @@ public class App {
 		Container c = new Container(t_type, capacity, new Position(x, y));
 		containers.add(c);
 	}
-	
+
 	private static void buildTrucks(String truckCombination, int capacity, int num, boolean allowsIntermediate) {
-		
-		List <String> specialTypes = new ArrayList<>();
-		List <TrashType> regularTypes = new ArrayList<>();
+
+		List<String> specialTypes = new ArrayList<>();
+		List<TrashType> regularTypes = new ArrayList<>();
 		switch (truckCombination.toUpperCase()) {
-		case "ALLCOMP":
-			System.out.println("AllComp");
-			specialTypes.add("Recycling");
-			specialTypes.add("Urgent");
-			specialTypes.add("EletroGreen");
-			break;
-		case "RECYCLING":
-			System.out.println("Recycling");
-			specialTypes.add("Recycling");			
-			regularTypes.add(TrashType.ELETRONIC);
-			regularTypes.add(TrashType.ORGANIC);
-			regularTypes.add(TrashType.REGULAR);
-			break;
-		case "URGENT":
-			System.out.println("Urgent");
-			specialTypes.add("Urgent");
-			regularTypes.add(TrashType.BLUE);
-			regularTypes.add(TrashType.GREEN);
-			regularTypes.add(TrashType.YELLOW);
-			regularTypes.add(TrashType.ELETRONIC);
-			break;
-		case "ELETROGREEN":
-			System.out.println("EletroGreen");
-			specialTypes.add("EletroGreen");
-			regularTypes.add(TrashType.BLUE);
-			regularTypes.add(TrashType.YELLOW);
-			regularTypes.add(TrashType.ORGANIC);
-			regularTypes.add(TrashType.REGULAR);
-			break;
-		case "ALLSIMPLE":
-		default:// regular (1 compartment)		
-			System.out.println("AllSimple");
-			for (TrashType type : TrashType.values())
-				regularTypes.add(type);	
-			break;
+			case "ALLCOMP":
+				System.out.println("AllComp");
+				specialTypes.add("Recycling");
+				specialTypes.add("Urgent");
+				specialTypes.add("EletroGreen");
+				break;
+			case "RECYCLING":
+				System.out.println("Recycling");
+				specialTypes.add("Recycling");
+				regularTypes.add(TrashType.ELETRONIC);
+				regularTypes.add(TrashType.ORGANIC);
+				regularTypes.add(TrashType.REGULAR);
+				break;
+			case "URGENT":
+				System.out.println("Urgent");
+				specialTypes.add("Urgent");
+				regularTypes.add(TrashType.BLUE);
+				regularTypes.add(TrashType.GREEN);
+				regularTypes.add(TrashType.YELLOW);
+				regularTypes.add(TrashType.ELETRONIC);
+				break;
+			case "ELETROGREEN":
+				System.out.println("EletroGreen");
+				specialTypes.add("EletroGreen");
+				regularTypes.add(TrashType.BLUE);
+				regularTypes.add(TrashType.YELLOW);
+				regularTypes.add(TrashType.ORGANIC);
+				regularTypes.add(TrashType.REGULAR);
+				break;
+			case "ALLSIMPLE":
+			default:// regular (1 compartment)
+				System.out.println("AllSimple");
+				for (TrashType type : TrashType.values())
+					regularTypes.add(type);
+				break;
 		}
-		
+
 		for (String specialT : specialTypes)
 			addSpecialTruckType(specialT, capacity, allowsIntermediate, num);
 		for (TrashType regularT : regularTypes)
 			addTruckType(regularT, capacity, allowsIntermediate, num);
 	}
-	
+
 	private static void buildContainers(int num, int capacity) {
-		
-		for(TrashType t_type : TrashType.values())	
+		for (TrashType t_type : TrashType.values())
 			buildTypeContainers(num, capacity, t_type);
-		
 	}
 
 	private static void buildTypeContainers(int num, int capacity, TrashType t_type) {
-		
+
 		int max = 30;
 		int min = -30;
 		Random random = new Random();
-		
+
 		for (int i = 0; i < num; i++) {
-			
+
 			int x = random.nextInt(max - min) + min;
 			int y = random.nextInt(max - min) + min;
-			
+
 			if (x == 0)
 				x = 1;
 			if (y == 0)
 				y = 1;
-			
+
 			App.addContainer(t_type, capacity, x, y);
 		}
 	}
-	
-	private static void parseArgs(String args[]) {
-		
-		if (args.length != 6 && args.length != 2)
-		{
+
+	private static void parseArgs() {
+
+		if (args.length != 6 && args.length != 2) {
 			System.out.println("Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
 			System.out.println("truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
 			System.out.println("OR");
 			System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
 			System.exit(-1);
 		}
-		
-		if (args.length == 6)
-		{
+
+		if (args.length == 6) {
 			String truckCombination = args[0];
 			int truckNum = Integer.parseInt(args[1]);
 			int truckCapacity = Integer.parseInt(args[2]);
@@ -196,30 +209,55 @@ public class App {
 			int containerCapacity = Integer.parseInt(args[4]);
 			int allowInterPickupsInt = Integer.parseInt(args[5]);
 			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
-			
 
-			App.buildContainers(containerNum, containerCapacity);			
+			App.buildContainers(containerNum, containerCapacity);
 			App.buildTrucks(truckCombination, truckCapacity, truckNum, allowInterPickups);
-		}
-		else
-		{
+		} else {
 			String debug = args[0];
-			if (!debug.toUpperCase().equals("DEBUG"))
-			{
+			if (!debug.toUpperCase().equals("DEBUG")) {
 				System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
 				System.exit(-1);
 			}
-			
+
 			int allowInterPickupsInt = Integer.parseInt(args[1]);
 			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
-			
+
 			addTruckType(TrashType.REGULAR, 100, allowInterPickups, 1);
 			addSpecialTruckType("Urgent", 100, allowInterPickups, 1);
 			addContainer(TrashType.REGULAR, 50, -5, 10);
 			addContainer(TrashType.ORGANIC, 50, 5, 10);
-				
+
 		}
-		
-		
+
 	}
+
+	@Override
+	public void setup() {
+		super.setup();
+
+		// property descriptors
+		// ...
+	}
+
+	@Override
+	public void begin() {
+		super.begin();
+
+		// display surfaces, spaces, displays, plots, ...
+		// ...
+	}
+
+	/**
+	 * Launching Repast3
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] argums) {
+		boolean BATCH_MODE = true;
+		SimInit init = new SimInit();
+		init.setNumRuns(1); // works only in batch mode
+		init.loadModel(new App(), null, BATCH_MODE);
+		args = argums;
+	}
+
 }

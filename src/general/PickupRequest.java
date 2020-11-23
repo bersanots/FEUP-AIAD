@@ -3,12 +3,12 @@ package general;
 import jade.core.AID;
 import jade.util.leap.Serializable;
 
-public class PickupRequest implements Serializable{
-	
+public class PickupRequest implements Serializable {
+
 	private Position pos;
 	private AID containerAID;
-	
-	public PickupRequest(Position pos, AID id){
+
+	public PickupRequest(Position pos, AID id) {
 		this.setPos(pos);
 		this.setContainerAID(id);
 	}
@@ -28,11 +28,10 @@ public class PickupRequest implements Serializable{
 	public void setContainerAID(AID containerAID) {
 		this.containerAID = containerAID;
 	}
-	
+
 	@Override
-    public String toString() {
-        return "Position [pos=" + pos.toString() + ", containerAID=" + containerAID.toString()
-                + "]";
-    }
-	
+	public String toString() {
+		return "Position [pos=" + pos.toString() + ", containerAID=" + containerAID.toString() + "]";
+	}
+
 }

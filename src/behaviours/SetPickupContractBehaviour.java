@@ -9,14 +9,14 @@ import agents.Central;
 import general.App;
 import general.PickupRequestInfo;
 import general.TrashType;
-import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import jade.proto.ContractNetInitiator;
+import jade.core.AID;
+import sajas.proto.ContractNetInitiator;
 
 public class SetPickupContractBehaviour extends ContractNetInitiator {
-	
+
 	private Central central;
 	private PickupRequestInfo reqInfo;
 
@@ -26,50 +26,48 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 		this.central = central;
 		this.reqInfo = reqInfo;
 	}
-	
+
 	private boolean evaluateProposal(Object o) {
 		Object[] oMsg = (Object[]) o;
 		String msgProt = (String) oMsg[0];
-		TrashType t_type = (TrashType)oMsg[1];
-		int capacity = (int)oMsg[2];
-		
+		TrashType t_type = (TrashType) oMsg[1];
+		int capacity = (int) oMsg[2];
+
 		if (!msgProt.equals("TCOUNTERPROP"))
 			return false;
-		
-		return (t_type== reqInfo.getTrashType() && reqInfo.getAmount() <= capacity);
-		
+
+		return (t_type == reqInfo.getTrashType() && reqInfo.getAmount() <= capacity);
 	}
 
-	protected static ACLMessage buildMsg(PickupRequestInfo reqInfo,
-			List<AID> truckAIDs) {
+	protected static ACLMessage buildMsg(PickupRequestInfo reqInfo, List<AID> truckAIDs) {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-  		for (AID truckAID : truckAIDs) {
-  			msg.addReceiver(truckAID);
-  		}
-			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-			// We want to receive a reply in 10 secs
-			//msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-			Object[] oMsg = new Object[2];
-			oMsg[0] = "CPROP";
-			oMsg[1] = reqInfo;
-			
-			try {
-				msg.setContentObject(oMsg);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		for (AID truckAID : truckAIDs) {
+			msg.addReceiver(truckAID);
+		}
+		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+		// We want to receive a reply in 10 secs
+		// msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+		Object[] oMsg = new Object[2];
+		oMsg[0] = "CPROP";
+		oMsg[1] = reqInfo;
+
+		try {
+			msg.setContentObject(oMsg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return msg;
 	}
 
 	protected void handlePropose(ACLMessage propose, Vector v) {
-		App.LOGGER.log("Agent "+propose.getSender().getLocalName()+" proposed pickup", true);
+		App.LOGGER.log("Agent " + propose.getSender().getLocalName() + " proposed pickup", true);
 	}
-	
+
 	protected void handleRefuse(ACLMessage refuse) {
-		App.LOGGER.log("Agent "+refuse.getSender().getLocalName()+" refused pickup", true);
+		App.LOGGER.log("Agent " + refuse.getSender().getLocalName() + " refused pickup", true);
 	}
-	
+
 	protected void handleFailure(ACLMessage failure) {
 		if (failure.getSender().equals(myAgent.getAMS())) {
 			// FAILURE notification from the JADE runtime: the receiver
@@ -77,11 +75,11 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 			App.LOGGER.log("Responder does not exist", true);
 		}
 		else {
-			App.LOGGER.log("Agent "+failure.getSender().getLocalName()+" failed pickup", true);
+			App.LOGGER.log("Agent " + failure.getSender().getLocalName() + " failed pickup", true);
 		}
 		// Immediate failure --> we will not receive a response from this agent
 	}
-	
+
 	protected void handleAllResponses(Vector responses, Vector acceptances) {
 		// Evaluate proposals.
 		Object bestProposal = null;
@@ -105,7 +103,6 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
 			}
 		}
 		// Accept the proposal of the best proposer
@@ -113,11 +110,10 @@ public class SetPickupContractBehaviour extends ContractNetInitiator {
 			App.LOGGER.log("Pickup has been handed to " + bestProposer.getLocalName(), true);
 			accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 		}
-		else 
-			central.insertRequest(reqInfo);
+		else central.insertRequest(reqInfo);
 	}
-	
+
 	protected void handleInform(ACLMessage inform) {
-		App.LOGGER.log("Agent "+inform.getSender().getLocalName()+" started the pickup", true);
+		App.LOGGER.log("Agent " + inform.getSender().getLocalName() + " started the pickup", true);
 	}
 }

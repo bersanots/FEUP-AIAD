@@ -5,11 +5,11 @@ import java.io.IOException;
 import agents.Container;
 import general.App;
 import general.Compartment;
-import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import jade.proto.AchieveREInitiator;
+import jade.core.AID;
+import sajas.proto.AchieveREInitiator;
 
 public class RequestPickupBehaviour extends AchieveREInitiator {
 
@@ -21,13 +21,11 @@ public class RequestPickupBehaviour extends AchieveREInitiator {
 		container.waitForTruck();
 		this.container = container;
 		this.compartment = container.getCompartment();
-		
-
 	}
 
 	protected static ACLMessage createMsg(Container container) {
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-		msg.addReceiver(new AID("central", AID.ISLOCALNAME));
+		msg.addReceiver(new sajas.core.AID("central", AID.ISLOCALNAME));
 		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		// msg.setContent("dummy-action");
 		Object[] oMsg = new Object[4];

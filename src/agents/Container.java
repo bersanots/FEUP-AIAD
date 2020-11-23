@@ -1,6 +1,5 @@
 package agents;
 
-
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import behaviours.GetIntermediatePickupContractBehaviour;
@@ -11,9 +10,9 @@ import general.Compartment;
 import general.DFUtils;
 import general.Position;
 import general.TrashType;
-import jade.core.Agent;
-import jade.core.behaviours.TickerBehaviour;
-import jade.domain.DFService;
+import sajas.core.Agent;
+import sajas.core.behaviours.TickerBehaviour;
+import sajas.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -48,7 +47,6 @@ public class Container extends Agent {
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
 		addBehaviour(new GiveTrashBehaviour(this, template));
 		addBehaviour(new GetIntermediatePickupContractBehaviour(this));
-		
 	}
 
 	public void takeDown() {
@@ -83,23 +81,22 @@ public class Container extends Agent {
 		App.LOGGER.log(this.getLocalName() + " awaiting truck", true);
 		this.isAwaitingTruck = true;
 		this.setLoggingVars();
-		
 	}
 
 	public void stopAwaitingTruck() {
 		setAvailable();
 		App.LOGGER.log(this.getLocalName(), "1 - STOPPED WAITING");
-		
+
 		long previous_time_sum = this.average_time * n_collections;
 		n_collections++;
-		
+
 		Date curr_time = new Date(System.currentTimeMillis());
 		long time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
 		App.LOGGER.log(this.getLocalName(), "2 - TIME WAITED: " + time_waited + " SECONDS");
-		
+
 		this.average_time = (previous_time_sum + time_waited) / n_collections;
 		App.LOGGER.log(this.getLocalName(), "3 - AVERAGE WAITING TIME: " + this.average_time + " SECONDS");
-		
+
 		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
 		this.isAwaitingTruck = false;
 		this.clearLoggingVars();
@@ -128,14 +125,12 @@ public class Container extends Agent {
 			e.printStackTrace();
 		}
 	}
-	
-	private void setLoggingVars()
-	{
+
+	private void setLoggingVars() {
 		this.request_start_time = new Date(System.currentTimeMillis());
 	}
-	
-	private void clearLoggingVars()
-	{
+
+	private void clearLoggingVars() {
 		this.request_start_time = null;
 	}
 }

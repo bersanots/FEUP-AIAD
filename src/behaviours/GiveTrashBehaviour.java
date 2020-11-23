@@ -11,14 +11,14 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.AchieveREResponder;
+import sajas.proto.AchieveREResponder;
 
 public class GiveTrashBehaviour extends AchieveREResponder {
 
 	private Container container;
 	private Compartment compartment;
 	private int amount = -1;
-	
+
 	public GiveTrashBehaviour(Container container, MessageTemplate mt) {
 		super(container, mt);
 		// TODO Auto-generated constructor stub
@@ -27,7 +27,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 	}
 
 	protected boolean checkAction(ACLMessage msg) {
-		
+
 		try {
 			Object[] o = (Object[]) msg.getContentObject();
 			String req = (String) o[0];
@@ -38,9 +38,7 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 			e.printStackTrace();
 			return false;
 		}
-		
-		
-		
+
 	}
 
 	protected int giveTrashToTruck() {
@@ -48,14 +46,14 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 		int takenTrash;
 		if (amount > 0)
 			takenTrash = this.compartment.removeContents(amount);
-		else 
-			takenTrash = this.compartment.emptyCompartment();		
+		else
+			takenTrash = this.compartment.emptyCompartment();
 		return takenTrash;
 	}
 
 	@Override
-	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {		
-		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from "+ request.getSender().getLocalName(), true);
+	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Trash Pickup from " + request.getSender().getLocalName(), true);
 		if (checkAction(request)) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you
@@ -73,23 +71,23 @@ public class GiveTrashBehaviour extends AchieveREResponder {
 
 	@Override
 	protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-		
+
 		int trashTaken = giveTrashToTruck();
-		if ( trashTaken >= 0) {
+		if (trashTaken >= 0) {
 			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": successfully gave trash", true);
 			ACLMessage inform = request.createReply();
-			
-			Object[] oMsg=new Object[3];
-	         oMsg[0] = "REQ";
-	         oMsg[1] = compartment.getType();
-	         oMsg[2] = trashTaken;
+
+			Object[] oMsg = new Object[3];
+			oMsg[0] = "REQ";
+			oMsg[1] = compartment.getType();
+			oMsg[2] = trashTaken;
 			try {
 				inform.setContentObject(oMsg);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//inform.setContent(compartment.getType().name() + " " + trashTaken);
+			// inform.setContent(compartment.getType().name() + " " + trashTaken);
 			inform.setPerformative(ACLMessage.INFORM);
 			return inform;
 		} else {

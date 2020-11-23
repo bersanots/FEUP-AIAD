@@ -7,7 +7,6 @@ import general.Position;
 import general.TrashType;
 import java.io.IOException;
 import agents.Central;
-import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -15,7 +14,8 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.AchieveREResponder;
+import jade.core.AID;
+import sajas.proto.AchieveREResponder;
 
 public class OrderPickupBehaviour extends AchieveREResponder {
 
@@ -25,13 +25,13 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	private Position pos;
 
 	public OrderPickupBehaviour(Central central) {
-		
+
 		super(central, buildTemplate());
 		// TODO Auto-generated constructor stub
 		this.central = central;
 	}
-	
-	protected static MessageTemplate buildTemplate(){
+
+	protected static MessageTemplate buildTemplate() {
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
@@ -44,14 +44,13 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 			Object[] oMsg = (Object[]) request.getContentObject();
 			String req = (String) oMsg[0];
 			if (req.equals("REQPIC")) {
-			this.trashType = (TrashType) oMsg[1];
-			this.amount = (Integer) oMsg[2];
-			this.pos = (Position) oMsg[3];
-			App.LOGGER.log("Request Content: " + req + " " + trashType.name() + " " + amount, true);
-			}
-			else 
+				this.trashType = (TrashType) oMsg[1];
+				this.amount = (Integer) oMsg[2];
+				this.pos = (Position) oMsg[3];
+				App.LOGGER.log("Request Content: " + req + " " + trashType.name() + " " + amount, true);
+			} else
 				ret = false;
-			
+
 		} catch (UnreadableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,9 +60,9 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	}
 
 	protected boolean performAction(TrashType t_type, int amount, AID containerAID) {
-		
+
 		PickupRequest req = new PickupRequest(this.pos, containerAID);
-		PickupRequestInfo reqInfo = new PickupRequestInfo(req, amount, t_type);		
+		PickupRequestInfo reqInfo = new PickupRequestInfo(req, amount, t_type);
 		this.central.requestPickup(reqInfo);
 		return true;
 	}
@@ -71,7 +70,7 @@ public class OrderPickupBehaviour extends AchieveREResponder {
 	@Override
 	protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
 		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Order Pickup for " + request.getSender().getLocalName(), true);
-		
+
 		if (checkAction(request)) {
 			// We agree to perform the action. Note that in the FIPA-Request
 			// protocol the AGREE message is optional. Return null if you

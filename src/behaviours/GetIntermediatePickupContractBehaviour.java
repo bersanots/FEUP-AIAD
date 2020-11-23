@@ -12,10 +12,10 @@ import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.ContractNetResponder;
+import sajas.proto.ContractNetResponder;
 
 public class GetIntermediatePickupContractBehaviour extends ContractNetResponder {
-	
+
 	private Container container;
 	private Compartment compartment;
 
@@ -25,15 +25,15 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 		this.compartment = container.getCompartment();
 		// TODO Auto-generated constructor stub
 	}
-	
-	protected static MessageTemplate buildTemplate(){
+
+	protected static MessageTemplate buildTemplate() {
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
-				MessageTemplate.MatchPerformative(ACLMessage.CFP) );
+				MessageTemplate.MatchPerformative(ACLMessage.CFP));
 		return template;
 	}
-	
-	private void buildInformBodyMsg(ACLMessage msg) {		
+
+	private void buildInformBodyMsg(ACLMessage msg) {
 		Object[] oMsg = new Object[2];
 		oMsg[0] = "NEWCT";
 		oMsg[1] = this.container.getPos();
@@ -44,34 +44,33 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 			e.printStackTrace();
 		}
 	}
-	
+
 	private boolean evaluateAction(ACLMessage cfp) {
 		Object[] oMsg;
 		try {
 			oMsg = (Object[]) cfp.getContentObject();
-			
+
 			String msgProt = (String) oMsg[0];
-			
+
 			if (!msgProt.equals("TPROP"))
 				return false;
-			
+
 			return this.compartment.getCurrentAmount() > 0;
-			
+
 		} catch (UnreadableException e) {
 			return false;
 		}
-		
 	}
 
 	private boolean performAction() {
 		return true;
 	}
-	
+
 	private void buildProposal(ACLMessage msg) {
-		
+
 		container.waitForTruck();
 		int currentAmount = compartment.getCurrentAmount();
-		
+
 		Object[] oMsg = new Object[3];
 		oMsg[0] = "CTCOUNTERPROP";
 		oMsg[1] = compartment.getType();
@@ -82,14 +81,16 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
 	protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
-		/*System.out.println("Agent " + this.getAgent().getLocalName() + ": CFP received from " + cfp.getSender().getLocalName()
-				+ ". Action is ");*/
-		
+		/*
+		 * System.out.println("Agent " + this.getAgent().getLocalName() +
+		 * ": CFP received from " + cfp.getSender().getLocalName() + ". Action is ");
+		 */
+
 		if (evaluateAction(cfp)) {
 			// We provide a proposal
 			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Proposing " + compartment.getType().name() + " Intermediate Pickup", true);
@@ -107,7 +108,7 @@ public class GetIntermediatePickupContractBehaviour extends ContractNetResponder
 	@Override
 	protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept)
 			throws FailureException {
-			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup proposal accepted", true);
+		App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": Intermediate pickup proposal accepted", true);
 		if (performAction()) {
 			App.LOGGER.log("Agent " + this.getAgent().getLocalName() + ": starting Intermediate pickup", true);
 			ACLMessage inform = accept.createReply();
