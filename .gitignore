@@ -1,6 +1,5 @@
 ### jade ###
-APDescription.txt
-MTPs-Main-Container.txt
+*.txt
 
 ### vscode ###
 .vscode

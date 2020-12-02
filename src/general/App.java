@@ -29,6 +29,10 @@ public class App extends Repast3Launcher {
 
 	private static String args[];
 
+	public App(String argums[]) {
+		args = argums;
+	}
+
 	@Override
 	public String[] getInitParam() {
 		return new String[0];
@@ -194,8 +198,10 @@ public class App extends Repast3Launcher {
 	private static void parseArgs() {
 
 		if (args.length != 6 && args.length != 2) {
-			System.out.println("Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
-			System.out.println("truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
+			System.out.println(
+					"Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
+			System.out.println(
+					"truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
 			System.out.println("OR");
 			System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
 			System.exit(-1);
@@ -256,8 +262,7 @@ public class App extends Repast3Launcher {
 		boolean BATCH_MODE = true;
 		SimInit init = new SimInit();
 		init.setNumRuns(1); // works only in batch mode
-		init.loadModel(new App(), null, BATCH_MODE);
-		args = argums;
+		init.loadModel(new App(argums), null, BATCH_MODE);
 	}
 
 }
