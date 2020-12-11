@@ -199,7 +199,7 @@ public class App extends Repast3Launcher {
 
 		if (args.length != 6 && args.length != 2) {
 			System.out.println(
-					"Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
+					"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
 			System.out.println(
 					"truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
 			System.out.println("OR");
