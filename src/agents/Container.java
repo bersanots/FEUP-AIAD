@@ -1,5 +1,6 @@
 package agents;
 
+import java.awt.Color;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import behaviours.GetIntermediatePickupContractBehaviour;
@@ -13,13 +14,15 @@ import general.TrashType;
 import sajas.core.Agent;
 import sajas.core.behaviours.TickerBehaviour;
 import sajas.domain.DFService;
+import uchicago.src.sim.gui.Drawable;
+import uchicago.src.sim.gui.SimGraphics;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class Container extends Agent {
+public class Container extends Agent implements Drawable{
 
 	private Compartment compartment;
 	private Position pos;
@@ -29,6 +32,9 @@ public class Container extends Agent {
 	private Date request_start_time = null;
 	private long average_time = 0;
 	private int n_collections = 0;
+	
+	//drawable
+	Color color = new Color(255, 0, 0);
 
 	public Container(TrashType type, int capacity, Position pos) {
 		this.compartment = new Compartment(type, capacity);
@@ -132,5 +138,20 @@ public class Container extends Agent {
 
 	private void clearLoggingVars() {
 		this.request_start_time = null;
+	}
+
+	@Override
+	public void draw(SimGraphics g) {
+		g.drawCircle(color);
+	}
+
+	@Override
+	public int getX() {
+		return this.pos.getX();
+	}
+
+	@Override
+	public int getY() {
+		return this.pos.getY();
 	}
 }

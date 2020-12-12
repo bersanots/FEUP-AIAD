@@ -1,5 +1,6 @@
 package agents;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -19,12 +20,14 @@ import behaviours.SetIntermediatePickupContractBehaviour;
 import jade.core.AID;
 import sajas.core.Agent;
 import sajas.domain.DFService;
+import uchicago.src.sim.gui.Drawable;
+import uchicago.src.sim.gui.SimGraphics;
 import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 
-public class Truck extends Agent {
+public class Truck extends Agent implements Drawable{
 
 	private List<Compartment> compartments;
 	private Position centralPos = new Position(25,25);
@@ -38,6 +41,9 @@ public class Truck extends Agent {
 	private long average_time = 0;
 	private double average_distance = 0;
 	private int n_collections = 0;
+	
+	//drawable
+	Color color = new Color(0, 255, 0);
 
 	public Truck(String type, int total_capacity) {
 		this(type, total_capacity, true);
@@ -77,6 +83,10 @@ public class Truck extends Agent {
 				compartments.add(new Compartment(TrashType.REGULAR, total_capacity));
 				break;
 		}
+	}
+	
+	public Position getPos() {
+		return this.pos;
 	}
 
 	private ACLMessage buildPickupGarbageMsg(AID container_AID, int amount) {
@@ -332,5 +342,20 @@ public class Truck extends Agent {
 
 	public void setScanning(boolean isScanning) {
 		this.isScanning = isScanning;
+	}
+	
+	@Override
+	public void draw(SimGraphics g) {
+		g.drawRect(color);
+	}
+
+	@Override
+	public int getX() {
+		return this.pos.getX();
+	}
+
+	@Override
+	public int getY() {
+		return this.pos.getY();
 	}
 }

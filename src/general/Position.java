@@ -15,6 +15,14 @@ public class Position implements Serializable {
 	public Position(Position pos) {
 		this(pos.x, pos.y);
 	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
 
 	public double getDistance(Position pos) {
 		return Math.sqrt((pos.y - this.y) * (pos.y - this.y) + (pos.x - this.x) * (pos.x - this.x));

@@ -1,5 +1,6 @@
 package agents;
 
+import java.awt.Color;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -17,14 +18,23 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
 import sajas.proto.SubscriptionInitiator;
+import uchicago.src.sim.gui.Drawable;
+import uchicago.src.sim.gui.SimGraphics;
 
-public class Central extends Agent {
+public class Central extends Agent implements Drawable{
 
 	private Position pos = new Position(25, 25);
 	private ConcurrentLinkedQueue<PickupRequestInfo> requestQueue;
+	
+	//drawable
+	Color color = new Color(0, 0, 255);
 
 	public Central() {
 		this.requestQueue = new ConcurrentLinkedQueue<>();
+	}
+	
+	public Position getPos() {
+		return this.pos;
 	}
 
 	public void setup() {
@@ -88,5 +98,20 @@ public class Central extends Agent {
 
 	synchronized public PickupRequestInfo popRequest() {
 		return requestQueue.poll();
+	}
+	
+	@Override
+	public void draw(SimGraphics g) {
+		g.drawHollowFastRoundRect(color);		
+	}
+
+	@Override
+	public int getX() {
+		return this.pos.getX();
+	}
+
+	@Override
+	public int getY() {
+		return this.pos.getY();
 	}
 }

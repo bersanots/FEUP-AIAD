@@ -11,13 +11,15 @@ import agents.Truck;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
-
+import sajas.core.Agent;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import sajas.wrapper.AgentController;
-
+import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.gui.DisplaySurface;
+import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Multi2DGrid;
 
 public class App extends Repast3Launcher {
@@ -27,10 +29,17 @@ public class App extends Repast3Launcher {
 	private static List<Truck> trucks = new ArrayList<>();
 	private static List<Container> containers = new ArrayList<>();
 	private static Central central = new Central();
+	
+	private List<Agent> agentList = new ArrayList<>();
 
 	private static String args[];
 	
-	Multi2DGrid space = new Multi2DGrid(100, 100, false);
+	//graphics
+	Multi2DGrid space;
+	DisplaySurface dsurf;
+	
+	//schedule
+	Schedule schedule;
 
 
 	public App(String argums[]) {
@@ -44,7 +53,7 @@ public class App extends Repast3Launcher {
 
 	@Override
 	public String getName() {
-		return "SAJaS Project";
+		return "SmartTrashPickup";
 	}
 
 	@Override
@@ -248,6 +257,9 @@ public class App extends Repast3Launcher {
 		// prepare simulation
 		// create Schedule
 		// create DisplaySurface
+		dsurf = new DisplaySurface(this,
+				this.getName());
+		registerDisplaySurface(this.getName(), dsurf);
 	}
 
 	@Override
@@ -262,15 +274,26 @@ public class App extends Repast3Launcher {
 	
 	private void buildModel() {
 		// create and store agents
+		setupAgentList();
 		// create space, data recorders
+		this.space =  new Multi2DGrid(50, 50, false);
+		drawAgents();
 	}
 	
 	private void buildDisplay() {
 		// create displays, charts
+		Object2DDisplay agentDisplay = new Object2DDisplay(space);
+		agentDisplay.setObjectList(agentList);
+				
+		dsurf.addDisplayableProbeable(agentDisplay, "Agents");
+		addSimEventListener(dsurf);
+		dsurf.display();
 	}
 	
 	private void buildSchedule() {
 		// build the schedule
+		this.schedule = this.getSchedule();
+		schedule.scheduleActionAtInterval(1, dsurf, "updateDisplay", Schedule.LAST);
 	}
 
 	/**
@@ -288,6 +311,22 @@ public class App extends Repast3Launcher {
 		init.loadModel(model, null, BATCH_MODE);
 	}
 	
+	private void setupAgentList() {
+		
+		for (Truck truck : App.trucks)
+			agentList.add(truck);
+		for (Container container: App.containers)
+			agentList.add(container);
+		agentList.add(central);
+	}
 	
+	private void drawAgents() {
+		
+		for (Truck truck : App.trucks)
+			space.putObjectAt(truck.getPos().getX(), truck.getPos().getY(), truck);
+		for (Container container: App.containers)
+			space.putObjectAt(container.getPos().getX(), container.getPos().getY(), container);
+		space.putObjectAt(central.getPos().getX(), central.getPos().getY(), central);
+	}
 
 }
