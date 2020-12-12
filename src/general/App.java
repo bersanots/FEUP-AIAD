@@ -18,6 +18,7 @@ import sajas.wrapper.ContainerController;
 import sajas.wrapper.AgentController;
 
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.space.Multi2DGrid;
 
 public class App extends Repast3Launcher {
 
@@ -28,6 +29,9 @@ public class App extends Repast3Launcher {
 	private static Central central = new Central();
 
 	private static String args[];
+	
+	Multi2DGrid space = new Multi2DGrid(100, 100, false);
+
 
 	public App(String argums[]) {
 		args = argums;
@@ -177,8 +181,8 @@ public class App extends Repast3Launcher {
 
 	private static void buildTypeContainers(int num, int capacity, TrashType t_type) {
 
-		int max = 30;
-		int min = -30;
+		int max = 50;
+		int min = 0;
 		Random random = new Random();
 
 		for (int i = 0; i < num; i++) {
@@ -186,17 +190,17 @@ public class App extends Repast3Launcher {
 			int x = random.nextInt(max - min) + min;
 			int y = random.nextInt(max - min) + min;
 
-			if (x == 0)
-				x = 1;
-			if (y == 0)
-				y = 1;
+			if (x == 25)
+				x = 30;
+			if (y == 25)
+				y = 30;
 
 			App.addContainer(t_type, capacity, x, y);
 		}
 	}
 
 	private static void parseArgs() {
-
+		
 		if (args.length != 6 && args.length != 2) {
 			System.out.println(
 					"Usage: app $truckNum(truckCombination) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
@@ -240,17 +244,33 @@ public class App extends Repast3Launcher {
 	@Override
 	public void setup() {
 		super.setup();
-
 		// property descriptors
-		// ...
+		// prepare simulation
+		// create Schedule
+		// create DisplaySurface
 	}
 
 	@Override
 	public void begin() {
 		super.begin();
-
+		buildModel();
+		buildDisplay();
+		buildSchedule();
 		// display surfaces, spaces, displays, plots, ...
 		// ...
+	}
+	
+	private void buildModel() {
+		// create and store agents
+		// create space, data recorders
+	}
+	
+	private void buildDisplay() {
+		// create displays, charts
+	}
+	
+	private void buildSchedule() {
+		// build the schedule
 	}
 
 	/**
@@ -262,7 +282,12 @@ public class App extends Repast3Launcher {
 		boolean BATCH_MODE = true;
 		SimInit init = new SimInit();
 		init.setNumRuns(1); // works only in batch mode
-		init.loadModel(new App(argums), null, BATCH_MODE);
+		
+		App model = new App(argums);
+		
+		init.loadModel(model, null, BATCH_MODE);
 	}
+	
+	
 
 }

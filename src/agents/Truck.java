@@ -27,7 +27,8 @@ import jade.lang.acl.ACLMessage;
 public class Truck extends Agent {
 
 	private List<Compartment> compartments;
-	private Position pos = new Position(0, 0);
+	private Position centralPos = new Position(25,25);
+	private Position pos = new Position(centralPos);
 	private PickupRequest pickupRequest = null;
 	private boolean isScanning = false;
 	private boolean allowsIntermediatePickups;
@@ -189,7 +190,7 @@ public class Truck extends Agent {
 	}
 
 	public boolean isAvailable() {
-		return this.pickupRequest == null && pos.equals(new Position(0, 0));
+		return this.pickupRequest == null && pos.equals(this.centralPos);
 	}
 
 	public boolean isReturning() {
@@ -205,7 +206,7 @@ public class Truck extends Agent {
 
 	public boolean reachedCentral() {
 		if (pickupRequest != null)
-			return this.pos.getDistance(new Position(0, 0)) == 0;
+			return this.pos.getDistance(this.centralPos) == 0;
 		else
 			return false;
 	}
@@ -219,7 +220,7 @@ public class Truck extends Agent {
 
 	public void moveTowardsCentral() {
 		App.LOGGER.log(this.getLocalName() + " ==> central : " + this.pos.toString(), true);
-		Position step = this.pos.getUnitaryStep(new Position(0, 0));
+		Position step = this.pos.getUnitaryStep(this.centralPos);
 		this.distance.sum(step.abs());
 		this.pos.sum(step);
 	}
@@ -253,7 +254,7 @@ public class Truck extends Agent {
 		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.SECONDS);
 		App.LOGGER.log(this.getLocalName(), "3 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
 
-		double trip_distance = this.distance.getDistance(new Position(0, 0));
+		double trip_distance = this.distance.getDistance(this.centralPos);
 		App.LOGGER.log(this.getLocalName(), "4 - TRIP DISTANCE: " + trip_distance);
 
 		this.average_time = (previous_time_sum + round_trip_time) / this.n_collections;

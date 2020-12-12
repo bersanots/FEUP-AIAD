@@ -20,7 +20,7 @@ import sajas.proto.SubscriptionInitiator;
 
 public class Central extends Agent {
 
-	private Position pos = new Position(0, 0);
+	private Position pos = new Position(25, 25);
 	private ConcurrentLinkedQueue<PickupRequestInfo> requestQueue;
 
 	public Central() {
