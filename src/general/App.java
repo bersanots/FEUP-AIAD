@@ -312,20 +312,18 @@ public class App extends Repast3Launcher {
 	}
 	
 	private void setupAgentList() {
-		
-		for (Truck truck : App.trucks)
-			agentList.add(truck);
 		for (Container container: App.containers)
 			agentList.add(container);
+		for (Truck truck : App.trucks)
+			agentList.add(truck);
 		agentList.add(central);
 	}
 	
 	private void drawAgents() {
-		
-		for (Truck truck : App.trucks)
-			space.putObjectAt(truck.getPos().getX(), truck.getPos().getY(), truck);
 		for (Container container: App.containers)
 			space.putObjectAt(container.getPos().getX(), container.getPos().getY(), container);
+		for (Truck truck : App.trucks)
+			space.putObjectAt(truck.getPos().getX(), truck.getPos().getY(), truck);
 		space.putObjectAt(central.getPos().getX(), central.getPos().getY(), central);
 	}
 

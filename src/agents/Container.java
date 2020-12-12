@@ -7,6 +7,7 @@ import behaviours.GetIntermediatePickupContractBehaviour;
 import behaviours.GiveTrashBehaviour;
 import behaviours.RequestPickupBehaviour;
 import general.App;
+import general.ColorAssigner;
 import general.Compartment;
 import general.DFUtils;
 import general.Position;
@@ -34,11 +35,12 @@ public class Container extends Agent implements Drawable{
 	private int n_collections = 0;
 	
 	//drawable
-	Color color = new Color(255, 0, 0);
+	Color color;
 
 	public Container(TrashType type, int capacity, Position pos) {
 		this.compartment = new Compartment(type, capacity);
 		this.pos = pos;
+		this.color = ColorAssigner.assignColor(type);
 	}
 
 	public void setup() {
@@ -142,7 +144,7 @@ public class Container extends Agent implements Drawable{
 
 	@Override
 	public void draw(SimGraphics g) {
-		g.drawCircle(color);
+		g.drawFastCircle(color);
 	}
 
 	@Override

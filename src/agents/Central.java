@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import behaviours.OrderPickupBehaviour;
 import behaviours.SetPickupContractBehaviour;
 import general.App;
+import general.ColorAssigner;
 import general.DFUtils;
 import general.PickupRequestInfo;
 import general.Position;
@@ -27,7 +28,7 @@ public class Central extends Agent implements Drawable{
 	private ConcurrentLinkedQueue<PickupRequestInfo> requestQueue;
 	
 	//drawable
-	Color color = new Color(0, 0, 255);
+	Color color = ColorAssigner.centralColor();
 
 	public Central() {
 		this.requestQueue = new ConcurrentLinkedQueue<>();
@@ -102,7 +103,7 @@ public class Central extends Agent implements Drawable{
 	
 	@Override
 	public void draw(SimGraphics g) {
-		g.drawHollowFastRoundRect(color);		
+		g.drawFastOval(color);	
 	}
 
 	@Override

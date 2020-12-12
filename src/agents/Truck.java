@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import general.App;
+import general.ColorAssigner;
 import general.Compartment;
 import general.DFUtils;
 import general.PickupRequest;
@@ -43,10 +44,11 @@ public class Truck extends Agent implements Drawable{
 	private int n_collections = 0;
 	
 	//drawable
-	Color color = new Color(0, 255, 0);
+	List<Color> colors = new ArrayList<>();
 
 	public Truck(String type, int total_capacity) {
 		this(type, total_capacity, true);
+		
 	}
 
 	public Truck(TrashType type, int total_capacity, boolean allowsIntermediatePickups) {
@@ -54,6 +56,9 @@ public class Truck extends Agent implements Drawable{
 		compartments = new ArrayList<>();
 		this.allowsIntermediatePickups = allowsIntermediatePickups;
 		compartments.add(new Compartment(type, total_capacity));
+		//drawable
+		setupColors();
+		
 
 	}
 
@@ -83,10 +88,30 @@ public class Truck extends Agent implements Drawable{
 				compartments.add(new Compartment(TrashType.REGULAR, total_capacity));
 				break;
 		}
+		//drawable
+		setupColors();
 	}
 	
 	public Position getPos() {
 		return this.pos;
+	}
+	
+	private void setupColors() {
+		Color currColor = new Color(0,0,0);
+		for (int i = 0; i < 4; i++) {
+			
+			if (i < this.compartments.size()) {
+				TrashType type = compartments.get(i).getType();
+				currColor = ColorAssigner.assignColor(type);
+			}
+			
+			if (i == 3) {
+				currColor = new Color(0,0,0);
+			}
+			
+			this.colors.add(currColor);
+			
+		}
 	}
 
 	private ACLMessage buildPickupGarbageMsg(AID container_AID, int amount) {
@@ -346,7 +371,9 @@ public class Truck extends Agent implements Drawable{
 	
 	@Override
 	public void draw(SimGraphics g) {
-		g.drawRect(color);
+		
+		g.drawRect(colors.get(3));
+		g.draw4ColorHollowRect(colors.get(0), colors.get(1), colors.get(2), colors.get(3));
 	}
 
 	@Override
