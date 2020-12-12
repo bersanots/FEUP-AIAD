@@ -20,6 +20,7 @@ import uchicago.src.sim.analysis.BinDataSource;
 import uchicago.src.sim.analysis.OpenHistogram;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.analysis.Sequence;
+import uchicago.src.sim.engine.BasicAction;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -324,7 +325,9 @@ public class App extends Repast3Launcher {
 					}
 				}
 				
-				return full_time_sum / n;
+				if (n==0)
+					return 0;
+				else return full_time_sum / n;
 			}
 		
 		}
@@ -366,7 +369,9 @@ public class App extends Repast3Launcher {
 					}
 				}
 				
-				return avg_wait_time_sum / n;
+				if (n==0)
+					return 0;
+				else return avg_wait_time_sum / n;
 			}
 		
 		}
@@ -409,7 +414,9 @@ public class App extends Repast3Launcher {
 					}
 				}
 				
-				return avg_occupation_sum / n;
+				if (n==0)
+					return 0;
+				else return avg_occupation_sum / n;
 			}
 		
 		}
@@ -515,6 +522,19 @@ public class App extends Repast3Launcher {
 		schedule.scheduleActionAtInterval(1, this.avgContainerOccupationGraph, "step", Schedule.LAST);
 		schedule.scheduleActionAtInterval(1, this.containerFullTimeGraph, "step", Schedule.LAST);
 		schedule.scheduleActionAtInterval(1, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
+		
+		
+		class GenerateTrashAction extends BasicAction{
+
+			@Override
+			public void execute() {
+				for(Container container : containers)
+					container.generateTrashStep();
+			}
+			
+		}
+		
+		schedule.scheduleActionAtInterval(50, new GenerateTrashAction(), Schedule.LAST);
 		
 	}
 

@@ -48,7 +48,7 @@ public class Container extends Agent implements Drawable{
 
 	public void setup() {
 		setAvailable();
-		addBehaviour(new TrashGenerationBehaviour(this, rate));
+		//addBehaviour(new TrashGenerationBehaviour(this, rate));
 		App.LOGGER.log("A new Container was created!", true);
 		App.LOGGER.createLogFile(this.getLocalName());
 		App.LOGGER.log(this.getLocalName(), this.getLocalName() + " TYPE: " + this.compartment.getType().name() + " - CAPACITY: " + this.compartment.getCapacity());
@@ -79,6 +79,16 @@ public class Container extends Agent implements Drawable{
 			if (compartment.isFull() && !isAwaitingTruck) {
 				addBehaviour(new RequestPickupBehaviour(container));
 			}
+		}
+	}
+	
+	public void generateTrashStep() {
+		
+		if (!compartment.isFull()) {
+			compartment.generateTrash();
+		}
+		if (compartment.isFull() && !isAwaitingTruck) {
+			addBehaviour(new RequestPickupBehaviour(this));
 		}
 	}
 
