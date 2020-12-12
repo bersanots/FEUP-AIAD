@@ -104,7 +104,15 @@ public class Container extends Agent implements Drawable{
 		n_collections++;
 
 		Date curr_time = new Date(System.currentTimeMillis());
-		long time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
+		
+		
+		long time_waited = -1;
+		
+		if (this.request_start_time == null)
+			time_waited = this.average_time;
+		else 
+			time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
+		
 		App.LOGGER.log(this.getLocalName(), "2 - TIME WAITED: " + time_waited + " SECONDS");
 
 		this.average_time = (previous_time_sum + time_waited) / n_collections;
