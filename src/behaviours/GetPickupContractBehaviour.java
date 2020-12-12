@@ -63,7 +63,8 @@ public class GetPickupContractBehaviour extends ContractNetResponder {
 	private boolean performAction() {
 		// Simulate action execution by generating a random number
 		this.truck.startPickup(containerPos, containerAID);
-		this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 750));
+		//this.truck.addBehaviour(new MoveTruckBehaviour(this.truck, 750));
+		this.truck.startMoving();
 		return true;
 	}
 

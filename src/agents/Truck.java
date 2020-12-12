@@ -36,6 +36,7 @@ public class Truck extends Agent implements Drawable{
 	private PickupRequest pickupRequest = null;
 	private boolean isScanning = false;
 	private boolean allowsIntermediatePickups;
+	private boolean isMoving = false;
 	// logging
 	private Date pickup_start_time = null;
 	private Position distance = null;
@@ -45,6 +46,7 @@ public class Truck extends Agent implements Drawable{
 	
 	//drawable
 	List<Color> colors = new ArrayList<>();
+	
 
 	public Truck(String type, int total_capacity) {
 		this(type, total_capacity, true);
@@ -394,5 +396,35 @@ public class Truck extends Agent implements Drawable{
 	@Override
 	public int getY() {
 		return this.pos.getY();
+	}
+	
+	public void moveStep() {
+		
+		if (!isMoving)
+			return;
+		
+		if (isAvailable()) {
+			endPickup();
+			stopMoving();
+		}
+		else if (isReturning()) {
+			if (!isScanning())
+				moveTowardsCentral();
+		}
+		else {
+			if (reachedContainer()) {
+				requestTrashFullPickup();
+				App.LOGGER.log(getLocalName() + " reached destination");
+			}
+			else moveTowardsPickup();
+		}
+	}
+
+	private void stopMoving() {
+		isMoving = false;
+	}
+	
+	public void startMoving() {
+		isMoving = true;
 	}
 }

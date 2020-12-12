@@ -534,7 +534,18 @@ public class App extends Repast3Launcher {
 			
 		}
 		
+		class MoveTruckAction extends BasicAction{
+
+			@Override
+			public void execute() {
+				for(Truck truck : trucks)
+					truck.moveStep();
+			}
+			
+		}
+		
 		schedule.scheduleActionAtInterval(50, new GenerateTrashAction(), Schedule.LAST);
+		schedule.scheduleActionAtInterval(25, new MoveTruckAction(), Schedule.LAST);
 		
 	}
 
