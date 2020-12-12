@@ -16,6 +16,10 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import sajas.wrapper.AgentController;
+import uchicago.src.sim.analysis.BinDataSource;
+import uchicago.src.sim.analysis.OpenHistogram;
+import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -35,8 +39,16 @@ public class App extends Repast3Launcher {
 	private static String args[];
 	
 	//graphics
-	Multi2DGrid space;
-	DisplaySurface dsurf;
+	private Multi2DGrid space;
+	private DisplaySurface dsurf;
+	
+	//statistics
+	private OpenSequenceGraph avgContainerWaitGraph;
+	private OpenSequenceGraph avgContainerOccupationGraph;
+	private OpenSequenceGraph avgTruckTripTimeGraph;
+	private OpenSequenceGraph containerFullTimeGraph;
+	private OpenSequenceGraph avgTruckTripDistanceGraph;
+	
 	
 	//schedule
 	Schedule schedule;
@@ -277,8 +289,212 @@ public class App extends Repast3Launcher {
 		setupAgentList();
 		// create space, data recorders
 		this.space =  new Multi2DGrid(50, 50, false);
+		
+		this.buildContainerAvgWaitTimeGraph();
+		this.buildTruckAvgTripTimeGraph();
+		this.buildContainerAvgOccupationGraph();
+		this.buildContainerFullTimeGraph();
+		this.buildTruckAvgDistanceGraph();
+		
 		drawAgents();
 	}
+	
+	private void buildContainerFullTimeGraph()
+	{
+		this.containerFullTimeGraph = new OpenSequenceGraph("Average Container Full Time", this);
+		this.containerFullTimeGraph.setAxisTitles("time", "time full");
+		
+		class AvgWaitTimeSeq implements Sequence {
+			private TrashType type;
+			public AvgWaitTimeSeq(TrashType type)
+			{
+				this.type = type;
+			}
+			
+			public double getSValue() {
+				long full_time_sum = 0;
+				int n = 0;
+				for(Container cont : App.containers)
+				{
+					TrashType contType = cont.getCompartment().getType();
+					if (type == contType || type == null)
+					{
+						n++;
+						full_time_sum += cont.getTotalFullTime();
+					}
+				}
+				
+				return full_time_sum / n;
+			}
+		
+		}
+		
+		this.containerFullTimeGraph.addSequence("Regular trash", new AvgWaitTimeSeq(TrashType.REGULAR));
+		this.containerFullTimeGraph.addSequence("Blue trash", new AvgWaitTimeSeq(TrashType.BLUE));
+		this.containerFullTimeGraph.addSequence("Green trash", new AvgWaitTimeSeq(TrashType.GREEN));
+		this.containerFullTimeGraph.addSequence("Yellow trash", new AvgWaitTimeSeq(TrashType.YELLOW));
+		this.containerFullTimeGraph.addSequence("Organic trash", new AvgWaitTimeSeq(TrashType.ORGANIC));
+		this.containerFullTimeGraph.addSequence("Eletronic trash", new AvgWaitTimeSeq(TrashType.ELETRONIC));
+		this.containerFullTimeGraph.addSequence("All trash", new AvgWaitTimeSeq(null));
+		
+		this.containerFullTimeGraph.setYRange(0, 20);
+		this.containerFullTimeGraph.display();
+	}
+	
+
+	private void buildContainerAvgWaitTimeGraph() {
+		this.avgContainerWaitGraph = new OpenSequenceGraph("Average Container Waiting Time", this);
+		this.avgContainerWaitGraph.setAxisTitles("time", "wait time");
+		
+		class AvgWaitTimeSeq implements Sequence {
+			private TrashType type;
+			public AvgWaitTimeSeq(TrashType type)
+			{
+				this.type = type;
+			}
+			
+			public double getSValue() {
+				long avg_wait_time_sum = 0;
+				int n = 0;
+				for(Container cont : App.containers)
+				{
+					TrashType contType = cont.getCompartment().getType();
+					if (type == contType || type == null)
+					{
+						n++;
+						avg_wait_time_sum += cont.getAverageWaitTime();
+					}
+				}
+				
+				return avg_wait_time_sum / n;
+			}
+		
+		}
+		
+		this.avgContainerWaitGraph.addSequence("Regular trash", new AvgWaitTimeSeq(TrashType.REGULAR));
+		this.avgContainerWaitGraph.addSequence("Blue trash", new AvgWaitTimeSeq(TrashType.BLUE));
+		this.avgContainerWaitGraph.addSequence("Green trash", new AvgWaitTimeSeq(TrashType.GREEN));
+		this.avgContainerWaitGraph.addSequence("Yellow trash", new AvgWaitTimeSeq(TrashType.YELLOW));
+		this.avgContainerWaitGraph.addSequence("Organic trash", new AvgWaitTimeSeq(TrashType.ORGANIC));
+		this.avgContainerWaitGraph.addSequence("Eletronic trash", new AvgWaitTimeSeq(TrashType.ELETRONIC));
+		this.avgContainerWaitGraph.addSequence("All trash", new AvgWaitTimeSeq(null));
+		
+		
+		this.avgContainerWaitGraph.display();
+	}
+	
+	private void buildContainerAvgOccupationGraph() {
+		this.avgContainerOccupationGraph = new OpenSequenceGraph("Average Container Occupation", this);
+		this.avgContainerOccupationGraph.setAxisTitles("time", "Occupation (%)");
+		
+		class AvgWaitTimeSeq implements Sequence {
+			private TrashType type;
+			public AvgWaitTimeSeq(TrashType type)
+			{
+				this.type = type;
+			}
+			
+			public double getSValue() {
+				int avg_occupation_sum = 0;
+				int n = 0;
+				for(Container cont : App.containers)
+				{
+					TrashType contType = cont.getCompartment().getType();
+					if (type == contType || type == null)
+					{
+						n++;
+						Compartment compa = cont.getCompartment();
+						double occupied_percent =  compa.getCurrentAmount() / (double) compa.getCapacity() * 100;
+						avg_occupation_sum += occupied_percent;
+					}
+				}
+				
+				return avg_occupation_sum / n;
+			}
+		
+		}
+		
+		this.avgContainerOccupationGraph.addSequence("Regular trash", new AvgWaitTimeSeq(TrashType.REGULAR));
+		this.avgContainerOccupationGraph.addSequence("Blue trash", new AvgWaitTimeSeq(TrashType.BLUE));
+		this.avgContainerOccupationGraph.addSequence("Green trash", new AvgWaitTimeSeq(TrashType.GREEN));
+		this.avgContainerOccupationGraph.addSequence("Yellow trash", new AvgWaitTimeSeq(TrashType.YELLOW));
+		this.avgContainerOccupationGraph.addSequence("Organic trash", new AvgWaitTimeSeq(TrashType.ORGANIC));
+		this.avgContainerOccupationGraph.addSequence("Eletronic trash", new AvgWaitTimeSeq(TrashType.ELETRONIC));
+		this.avgContainerOccupationGraph.addSequence("All trash", new AvgWaitTimeSeq(null));
+		
+		this.avgContainerOccupationGraph.setYRange(0, 100);
+		this.avgContainerOccupationGraph.display();
+	}
+	
+	private void buildTruckAvgTripTimeGraph() {
+		this.avgTruckTripTimeGraph = new OpenSequenceGraph("Average Truck Trip Time", this);
+		this.avgTruckTripTimeGraph.setAxisTitles("time", "trip time");
+		
+		class AvgWaitTimeSeq implements Sequence {
+			private TrashType type;
+			public AvgWaitTimeSeq(TrashType type)
+			{
+				this.type = type;
+			}
+			
+			public double getSValue() {
+				long avg_trip_time_sum = 0;
+				int n = 0;
+				for(Truck truck : App.trucks)
+				{
+					if (true)
+					{
+						n++;
+						avg_trip_time_sum += truck.getAverageTripTime();
+					}
+				}
+				
+				return avg_trip_time_sum / n;
+			}
+		
+		}
+		
+		this.avgTruckTripTimeGraph.addSequence("All Trucks", new AvgWaitTimeSeq(null));
+		
+		
+		this.avgTruckTripTimeGraph.display();
+	}
+	
+	private void buildTruckAvgDistanceGraph() {
+		this.avgTruckTripDistanceGraph = new OpenSequenceGraph("Average Truck Distance", this);
+		this.avgTruckTripDistanceGraph.setAxisTitles("time", "distance");
+		
+		class AvgWaitTimeSeq implements Sequence {
+			private TrashType type;
+			public AvgWaitTimeSeq(TrashType type)
+			{
+				this.type = type;
+			}
+			
+			public double getSValue() {
+				long avg_distance_sum = 0;
+				int n = 0;
+				for(Truck truck : App.trucks)
+				{
+					if (true)
+					{
+						n++;
+						avg_distance_sum += truck.getAverageTripDistance();
+					}
+				}
+				
+				return avg_distance_sum / n;
+			}
+		
+		}
+		
+		this.avgTruckTripDistanceGraph.addSequence("All Trucks", new AvgWaitTimeSeq(null));
+		
+		
+		this.avgTruckTripDistanceGraph.display();
+	}
+	
+
 	
 	private void buildDisplay() {
 		// create displays, charts
@@ -294,6 +510,12 @@ public class App extends Repast3Launcher {
 		// build the schedule
 		this.schedule = this.getSchedule();
 		schedule.scheduleActionAtInterval(1, dsurf, "updateDisplay", Schedule.LAST);
+		schedule.scheduleActionAtInterval(1, this.avgContainerWaitGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(1, this.avgTruckTripTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(1, this.avgContainerOccupationGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(1, this.containerFullTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(1, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
+		
 	}
 
 	/**

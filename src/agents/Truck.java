@@ -369,6 +369,16 @@ public class Truck extends Agent implements Drawable{
 		this.isScanning = isScanning;
 	}
 	
+	public long getAverageTripTime()
+	{
+		return this.average_time;
+	}
+	
+	public double getAverageTripDistance()
+	{
+		return this.average_distance;
+	}
+	
 	@Override
 	public void draw(SimGraphics g) {
 		

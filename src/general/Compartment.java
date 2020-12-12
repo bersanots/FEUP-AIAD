@@ -97,22 +97,22 @@ public class Compartment {
 		int prob = 0;
 		switch (type) {
 			case BLUE:
-				prob = 9;
+				prob = 19;
 				break;
 			case ELETRONIC:
-				prob = 1;
+				prob = 11;
 				break;
 			case GREEN:
-				prob = 7;
+				prob = 17;
 				break;
 			case ORGANIC:
-				prob = 2;
+				prob = 12;
 				break;
 			case REGULAR:
-				prob = 36;
+				prob = 46;
 				break;
 			case YELLOW:
-				prob = 12;
+				prob = 22;
 				break;
 		}
 		return prob;

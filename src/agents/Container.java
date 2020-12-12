@@ -33,6 +33,9 @@ public class Container extends Agent implements Drawable{
 	private Date request_start_time = null;
 	private long average_time = 0;
 	private int n_collections = 0;
+	private long total_full_time = 0;
+	private long average_full_time = 0;
+	private int n_full_collections = 0;
 	
 	//drawable
 	Color color;
@@ -92,6 +95,8 @@ public class Container extends Agent implements Drawable{
 	}
 
 	public void stopAwaitingTruck() {
+		boolean isFull = this.getCompartment().isFull();
+		
 		setAvailable();
 		App.LOGGER.log(this.getLocalName(), "1 - STOPPED WAITING");
 
@@ -106,6 +111,18 @@ public class Container extends Agent implements Drawable{
 		App.LOGGER.log(this.getLocalName(), "3 - AVERAGE WAITING TIME: " + this.average_time + " SECONDS");
 
 		App.LOGGER.log(this.getLocalName() + " request fulfilled", true);
+		
+		
+		if (isFull)
+		{
+			//long previous_full_time_sum = this.average_full_time * this.n_full_collections;
+			//this.n_full_collections++;
+			
+			//this.average_full_time = (previous_full_time_sum + time_waited) / this.n_full_collections;
+			this.total_full_time += time_waited;
+		}
+		
+		
 		this.isAwaitingTruck = false;
 		this.clearLoggingVars();
 	}
@@ -135,11 +152,21 @@ public class Container extends Agent implements Drawable{
 	}
 
 	private void setLoggingVars() {
-		this.request_start_time = new Date(System.currentTimeMillis());
+		this.request_start_time = new Date(System.currentTimeMillis());		
 	}
 
 	private void clearLoggingVars() {
 		this.request_start_time = null;
+	}
+	
+	public long getAverageWaitTime()
+	{
+		return this.average_time;
+	}
+	
+	public long getTotalFullTime()
+	{
+		return this.total_full_time;
 	}
 
 	@Override
