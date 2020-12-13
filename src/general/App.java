@@ -33,7 +33,7 @@ public class App extends Repast3Launcher {
 
 	private static List<Truck> trucks = new ArrayList<>();
 	private static List<Container> containers = new ArrayList<>();
-	private static Central central = new Central();
+	private static Central central;
 	
 	private List<Agent> agentList = new ArrayList<>();
 
@@ -81,8 +81,8 @@ public class App extends Repast3Launcher {
 		ContainerController container = rt.createAgentContainer(p2);
 
 		try {
-			central = new Central();
 			parseArgs();
+			central = new Central();
 
 			List<AgentController> acs = buildAgentControllerList(container);
 
@@ -203,7 +203,7 @@ public class App extends Repast3Launcher {
 
 	private static void buildTypeContainers(int num, int capacity, TrashType t_type) {
 
-		int max = 50;
+		int max = SpaceDimensions.getSize();
 		int min = 0;
 		Random random = new Random();
 
@@ -212,10 +212,10 @@ public class App extends Repast3Launcher {
 			int x = random.nextInt(max - min) + min;
 			int y = random.nextInt(max - min) + min;
 
-			if (x == 25)
-				x = 30;
-			if (y == 25)
-				y = 30;
+			while (x == SpaceDimensions.getCenterPos().getX())
+				x = random.nextInt(max - min) + min;
+			if (y == SpaceDimensions.getCenterPos().getY())
+				y = random.nextInt(max - min) + min;
 
 			App.addContainer(t_type, capacity, x, y);
 		}
@@ -238,6 +238,8 @@ public class App extends Repast3Launcher {
 			int truckNum = Integer.parseInt(args[1]);
 			int truckCapacity = Integer.parseInt(args[2]);
 			int containerNum = Integer.parseInt(args[3]);
+			SpaceDimensions.setSize(100);
+			//SpaceDimensions.setUpSize(containerNum);
 			int containerCapacity = Integer.parseInt(args[4]);
 			int allowInterPickupsInt = Integer.parseInt(args[5]);
 			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
@@ -289,7 +291,7 @@ public class App extends Repast3Launcher {
 		// create and store agents
 		setupAgentList();
 		// create space, data recorders
-		this.space =  new Multi2DGrid(50, 50, false);
+		this.space =  new Multi2DGrid(SpaceDimensions.getSize(), SpaceDimensions.getSize(), false);
 		
 		this.buildContainerAvgWaitTimeGraph();
 		this.buildTruckAvgTripTimeGraph();
@@ -511,11 +513,18 @@ public class App extends Repast3Launcher {
 		dsurf.addDisplayableProbeable(agentDisplay, "Agents");
 		addSimEventListener(dsurf);
 		dsurf.display();
+		dsurf.setSnapshotFileName("");
+		
+		this.avgContainerOccupationGraph.setSnapshotFileName("AVGOcc");
+		this.avgContainerWaitGraph.setSnapshotFileName("AVGWait");
+		this.avgTruckTripTimeGraph.setSnapshotFileName("AVGTripT");
+		this.containerFullTimeGraph.setSnapshotFileName("AVGFullT");
+		this.avgTruckTripDistanceGraph.setSnapshotFileName("AVGTripD");
 	}
 	
 	private void buildSchedule() {
 		// build the schedule
-		int scheduleTime = 5000;
+		int scheduleTime = 10000;
 		this.schedule = this.getSchedule();
 		schedule.scheduleActionAtInterval(scheduleTime * 3, dsurf, "updateDisplay", Schedule.LAST);
 		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerWaitGraph, "step", Schedule.LAST);
@@ -523,6 +532,12 @@ public class App extends Repast3Launcher {
 		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerOccupationGraph, "step", Schedule.LAST);
 		schedule.scheduleActionAtInterval(scheduleTime * 3, this.containerFullTimeGraph, "step", Schedule.LAST);
 		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
+		
+		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgContainerWaitGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgTruckTripTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgContainerOccupationGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 100, this.containerFullTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgTruckTripDistanceGraph, "takeSnapshot", Schedule.LAST);
 		
 		
 		class GenerateTrashAction extends BasicAction{

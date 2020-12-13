@@ -11,6 +11,7 @@ import general.ColorAssigner;
 import general.DFUtils;
 import general.PickupRequestInfo;
 import general.Position;
+import general.SpaceDimensions;
 import general.TrashType;
 import jade.core.AID;
 import sajas.core.Agent;
@@ -24,7 +25,7 @@ import uchicago.src.sim.gui.SimGraphics;
 
 public class Central extends Agent implements Drawable{
 
-	private Position pos = new Position(25, 25);
+	private Position pos = SpaceDimensions.getCenterPos();
 	private ConcurrentLinkedQueue<PickupRequestInfo> requestQueue;
 	
 	//drawable

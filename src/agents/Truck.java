@@ -14,6 +14,7 @@ import general.Compartment;
 import general.DFUtils;
 import general.PickupRequest;
 import general.Position;
+import general.SpaceDimensions;
 import general.TrashType;
 import behaviours.GetPickupContractBehaviour;
 import behaviours.PickupTrashBehaviour;
@@ -31,7 +32,7 @@ import jade.lang.acl.ACLMessage;
 public class Truck extends Agent implements Drawable{
 
 	private List<Compartment> compartments;
-	private Position centralPos = new Position(25,25);
+	private Position centralPos = SpaceDimensions.getCenterPos();
 	private Position pos = new Position(centralPos);
 	private PickupRequest pickupRequest = null;
 	private boolean isScanning = false;
