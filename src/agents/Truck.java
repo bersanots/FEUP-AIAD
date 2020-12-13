@@ -342,7 +342,7 @@ public class Truck extends Agent implements Drawable{
 
 	public void searchForContainers() {
 
-		if (!this.allowsIntermediatePickups || !this.isFull())
+		if (!this.allowsIntermediatePickups || this.isFull())
 			return;
 
 		isScanning = true;
