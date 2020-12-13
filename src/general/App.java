@@ -252,6 +252,8 @@ public class App extends Repast3Launcher {
 					System.out.println("Speed factor must be > 0");
 					System.out.println(
 							"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)  $speedFactor(float, > 0)");
+					System.out.println(
+							"truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
 					System.exit(-1);
 					
 				}
@@ -551,11 +553,11 @@ public class App extends Repast3Launcher {
 		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.containerFullTimeGraph, "step", Schedule.LAST);
 		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
 		
-		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgContainerWaitGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgTruckTripTimeGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgContainerOccupationGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.containerFullTimeGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgTruckTripDistanceGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 200, this.avgContainerWaitGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 200, this.avgTruckTripTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 200, this.avgContainerOccupationGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 200, this.containerFullTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 200, this.avgTruckTripDistanceGraph, "takeSnapshot", Schedule.LAST);
 		
 		
 		class GenerateTrashAction extends BasicAction{
