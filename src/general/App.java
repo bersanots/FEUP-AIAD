@@ -16,8 +16,6 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import sajas.wrapper.AgentController;
-import uchicago.src.sim.analysis.BinDataSource;
-import uchicago.src.sim.analysis.OpenHistogram;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.BasicAction;
@@ -279,7 +277,7 @@ public class App extends Repast3Launcher {
 
 			addTruckType(TrashType.REGULAR, 100, allowInterPickups, 1);
 			addSpecialTruckType("Urgent", 100, allowInterPickups, 1);
-			addContainer(TrashType.REGULAR, 50, -5, 10);
+			addContainer(TrashType.REGULAR, 50, 30, 10);
 			addContainer(TrashType.ORGANIC, 50, 5, 10);
 
 		}
