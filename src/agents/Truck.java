@@ -288,7 +288,7 @@ public class Truck extends Agent implements Drawable{
 		this.n_collections++;
 
 		Date curr_time = new Date(System.currentTimeMillis());
-		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.SECONDS);
+		long round_trip_time = App.LOGGER.getTimeDifference(this.pickup_start_time, curr_time, TimeUnit.MILLISECONDS);
 		App.LOGGER.log(this.getLocalName(), "3 - ROUND TRIP TIME: " + round_trip_time + " SECONDS");
 
 		double trip_distance = this.distance.getDistance(this.centralPos);
@@ -341,7 +341,7 @@ public class Truck extends Agent implements Drawable{
 
 	public void searchForContainers() {
 
-		if (!this.allowsIntermediatePickups)
+		if (!this.allowsIntermediatePickups || !this.isFull())
 			return;
 
 		isScanning = true;
@@ -426,5 +426,15 @@ public class Truck extends Agent implements Drawable{
 	
 	public void startMoving() {
 		isMoving = true;
+	}
+	
+	public boolean isFull() {
+		
+		boolean isFull = true;
+		for (Compartment compartment : compartments)
+		{
+			isFull = isFull && compartment.isFull();
+		}
+		return isFull;
 	}
 }

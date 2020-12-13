@@ -17,8 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class Logger {
 
 	File log_file;
+	boolean canLog = false;
 
 	public Logger(String log_file_name) {
+		if (!canLog)
+			return;
 		this.log_file = this.createLogFile(log_file_name);
 	}
 
@@ -41,6 +44,8 @@ public class Logger {
 	}
 
 	public File createLogFile(String log_file_name) {
+		if (!canLog)
+			return null;
 		log_file_name = this.getNormalizedFileName(log_file_name);
 		File file = null;
 
@@ -147,6 +152,8 @@ public class Logger {
 	}
 
 	synchronized public void log(String file_name, String content) {
+		if (!canLog)
+			return;
 		file_name = this.getNormalizedFileName(file_name);
 		content = content.substring(0, 1).toUpperCase() + content.substring(1); // capitalize first letter
 		content = this.getCurrentTimePrefix() + " " + content + System.lineSeparator();
@@ -159,10 +166,14 @@ public class Logger {
 	}
 
 	synchronized public void log(String content) {
+		if (!canLog)
+			return;
 		this.log(this.log_file.getName(), content);
 	}
 
 	synchronized public void log(String content, boolean print) {
+		if (!canLog)
+			return;
 		this.log(content);
 		if (print)
 			System.out.println(content);

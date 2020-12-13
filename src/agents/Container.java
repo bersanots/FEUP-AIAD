@@ -121,7 +121,7 @@ public class Container extends Agent implements Drawable{
 		if (this.request_start_time == null)
 			time_waited = this.average_time;
 		else 
-			time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.SECONDS);
+			time_waited = App.LOGGER.getTimeDifference(this.request_start_time, curr_time, TimeUnit.MILLISECONDS);
 		
 		App.LOGGER.log(this.getLocalName(), "2 - TIME WAITED: " + time_waited + " SECONDS");
 

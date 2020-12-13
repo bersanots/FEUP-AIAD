@@ -515,13 +515,14 @@ public class App extends Repast3Launcher {
 	
 	private void buildSchedule() {
 		// build the schedule
+		int scheduleTime = 5000;
 		this.schedule = this.getSchedule();
-		schedule.scheduleActionAtInterval(1, dsurf, "updateDisplay", Schedule.LAST);
-		schedule.scheduleActionAtInterval(1, this.avgContainerWaitGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(1, this.avgTruckTripTimeGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(1, this.avgContainerOccupationGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(1, this.containerFullTimeGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(1, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, dsurf, "updateDisplay", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerWaitGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgTruckTripTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerOccupationGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, this.containerFullTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
 		
 		
 		class GenerateTrashAction extends BasicAction{
@@ -544,8 +545,8 @@ public class App extends Repast3Launcher {
 			
 		}
 		
-		schedule.scheduleActionAtInterval(50, new GenerateTrashAction(), Schedule.LAST);
-		schedule.scheduleActionAtInterval(25, new MoveTruckAction(), Schedule.LAST);
+		schedule.scheduleActionAtInterval(scheduleTime * 3, new GenerateTrashAction(), Schedule.RANDOM);
+		schedule.scheduleActionAtInterval(scheduleTime, new MoveTruckAction(), Schedule.RANDOM);
 		
 	}
 
