@@ -53,6 +53,8 @@ public class App extends Repast3Launcher {
 	
 	//schedule
 	Schedule schedule;
+	private static int scheduleTime = 10000;
+
 
 
 	public App(String argums[]) {
@@ -223,9 +225,9 @@ public class App extends Repast3Launcher {
 
 	private static void parseArgs() {
 		
-		if (args.length != 6 && args.length != 2) {
+		if (args.length != 6 && args.length != 7 && args.length != 2) {
 			System.out.println(
-					"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)");
+					"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)  $speedFactor(float, > 0)");
 			System.out.println(
 					"truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
 			System.out.println("OR");
@@ -233,7 +235,7 @@ public class App extends Repast3Launcher {
 			System.exit(-1);
 		}
 
-		if (args.length == 6) {
+		if (args.length == 6 || args.length == 7) {
 			String truckCombination = args[0];
 			int truckNum = Integer.parseInt(args[1]);
 			int truckCapacity = Integer.parseInt(args[2]);
@@ -244,12 +246,31 @@ public class App extends Repast3Launcher {
 			int allowInterPickupsInt = Integer.parseInt(args[5]);
 			boolean allowInterPickups = allowInterPickupsInt != 0 ? true : false;
 
+			if (args.length == 7)
+			{
+				float speed_multiplier = Float.parseFloat(args[6]);
+				if (speed_multiplier <= 0)
+				{
+					System.out.println("Speed factor must be > 0");
+					System.out.println(
+							"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1)  $speedFactor(float, > 0)");
+					System.exit(-1);
+					
+				}
+				App.scheduleTime /= speed_multiplier;
+			}
+
 			App.buildContainers(containerNum, containerCapacity);
 			App.buildTrucks(truckCombination, truckCapacity, truckNum, allowInterPickups);
 		} else {
 			String debug = args[0];
 			if (!debug.toUpperCase().equals("DEBUG")) {
-				System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
+				System.out.println(
+					"Usage: app $truckComb(truckCombination) $truckNum(int) $truckCapacity(int) $containerNum(int) $containerCapacity(int) $allowIntermediatePickups(0/1) $speedFactor(float, > 0)");
+			System.out.println(
+					"truckCombination = \"AllSimple\" or \"Recycling\" or \"Urgent\" or \"EletroGreen\" or \"AllComp\"");
+			System.out.println("OR");
+			System.out.println("Usage: app \"debug\" $allowIntermediatePickups(0/1)");
 				System.exit(-1);
 			}
 
@@ -524,20 +545,19 @@ public class App extends Repast3Launcher {
 	
 	private void buildSchedule() {
 		// build the schedule
-		int scheduleTime = 10000;
 		this.schedule = this.getSchedule();
-		schedule.scheduleActionAtInterval(scheduleTime * 3, dsurf, "updateDisplay", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerWaitGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgTruckTripTimeGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgContainerOccupationGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 3, this.containerFullTimeGraph, "step", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 3, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, dsurf, "updateDisplay", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.avgContainerWaitGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.avgTruckTripTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.avgContainerOccupationGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.containerFullTimeGraph, "step", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, this.avgTruckTripDistanceGraph, "step", Schedule.LAST);
 		
-		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgContainerWaitGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgTruckTripTimeGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgContainerOccupationGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 100, this.containerFullTimeGraph, "takeSnapshot", Schedule.LAST);
-		schedule.scheduleActionAtInterval(scheduleTime * 100, this.avgTruckTripDistanceGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgContainerWaitGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgTruckTripTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgContainerOccupationGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.containerFullTimeGraph, "takeSnapshot", Schedule.LAST);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 100, this.avgTruckTripDistanceGraph, "takeSnapshot", Schedule.LAST);
 		
 		
 		class GenerateTrashAction extends BasicAction{
@@ -560,8 +580,8 @@ public class App extends Repast3Launcher {
 			
 		}
 		
-		schedule.scheduleActionAtInterval(scheduleTime * 3, new GenerateTrashAction(), Schedule.RANDOM);
-		schedule.scheduleActionAtInterval(scheduleTime, new MoveTruckAction(), Schedule.RANDOM);
+		schedule.scheduleActionAtInterval(App.scheduleTime * 3, new GenerateTrashAction(), Schedule.RANDOM);
+		schedule.scheduleActionAtInterval(App.scheduleTime, new MoveTruckAction(), Schedule.RANDOM);
 		
 	}
 
